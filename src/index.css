@@ -1,5 +1,148 @@
+/*
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+*/
+
+body {
+  background: #ddf2f0;
+  font: 14px/1.5em "Lato", sans-serif;
+}
+
+h1 {
+  font: 2em/1.5em 'Gugi', cursive;
+  margin-top: 5%;
+}
+
+h2 {
+  font: 1.3em/1.5em 'Gugi', cursive;
+}
+
+h3 {
+  font: 1.1em/1.5em 'Gugi', cursive;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+span {
+  color: 4bb177;
+}
+
+section {
+  background: white;
+  border: 1px solid #6ab316;
+  width: 100%;
+  padding:20px;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* css grid styles */
+.item-a {
+  grid-area: header;
+}
+
+.item-b {
+  grid-area: sidebar;
+}
+
+.item-c {
+  grid-area: main;
+}
+
+.container {
+  display: grid;
+  /*grid-column-gap: 20px; the gap between columns */
+  /*grid-row-gap: 20px; the gap between rows */
+  grid-gap: 15px 15px; /* short hand for grid-column-gap and grid-row-gap */
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header"
+    "sidebar"
+    "main";
+  justify-items: center; /* Aligns the content inside a grid item along the row axis */
+}
+/* end - css grid styles */
+
+.err-msg {
+  color: orange;
+}
+
+.food-item {
+  background: #ddf2f0;
+  margin: 10px;
+  padding: 7px;
+  border-radius: 5px;
+}
+
+.food-item:hover {
+  background: #bcf4ee;
+  transition: background .2s ease;
+  cursor: pointer;
+}
+
+.report-item {
+  border-radius: 47px 20px 94px 20px;
+  border: 1px solid #6ab316;
+  margin: 10px;
+  padding: 7px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.report-item:hover {
+  background: #efebea;
+  border: 1px solid #f8bebe;
+}
+
+@media only screen and (min-width: 1000px) {
+  /* styles applied above 1000px */
+  section {
+    border-radius: 47px 20px 94px 20px;
+    border: 1px solid #6ab316;
+    height: 600px;
+  }
+
+  .search-results {
+    margin: 0 auto;
+    overflow: auto;
+    height: 350px;
+  }
+
+  .report-results {
+    margin: 0 auto;
+    overflow: auto;
+    height: 350px;
+  }
+
+/* css grid styles */
+  .container {
+    grid-gap: 100px 100px; /* short hand for grid-column-gap and grid-row-gap */
+    grid-template-columns: 1fr 2fr 2fr  2fr 1fr; /* free space split into 5 equal cells */
+    grid-template-rows: auto 600px;
+    grid-template-areas:
+      "header header header header header" /* the header should take up 5 cells */
+      ". sidebar main main ."; /* the sidebar 1 cell and main 2 cells with a blank cell either side */
+  }
+/* end - css grid styles */
+
+}
+
+@media only screen and (min-width: 1200px) {
+  /* styles applied above 1200px */
+  body {
+    font: 16px/1.5em "Lato", sans-serif;
+  }
+
+  h1 {
+    font: 2.5em/1.5em 'Gugi', cursive;
+  }
 }
