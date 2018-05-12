@@ -119,7 +119,7 @@ class UserInput extends Component {
         for (let i = 0; i < l; i++) {
             deletedCalories = Math.round(this.state.selectedFoodItems[i].props['data-calories']); // use .props['data-id'] to access react jsx properties
             let sel = this.state.selectedFoodItems[i].props['data-id'];
-            if (sel == deleteItem) { // find the item that needs deleting from the selectedFoodItems array
+            if (sel === deleteItem) { // find the item that needs deleting from the selectedFoodItems array
                 selections.splice([i], 1); // delete using splice and its index
                 this.setState({calories: this.state.calories - deletedCalories}) // remove the corresponding number of calories from total
                 this.setState({selectedFoodItems: selections});
@@ -149,6 +149,7 @@ class UserInput extends Component {
                             {this.state.foodItems}
                         </ul>
                     </div>
+                    <Logo/>
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
