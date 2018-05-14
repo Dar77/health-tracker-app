@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import Logo from './Logo';
 
-const moment = require('moment'); // moment.js
+// set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
+const moment = require('moment');
+moment.locale('en', {
+    calendar : {
+        sameDay : '[Today]',
+    }
+});
+let now = moment().format('dddd Do MMMM YYYY'); // the current date 'when function is called'
+//let now = moment('Friday 11th May 2018')// used for testing DELETE
+
 let selections = []; // a temp array to push user selected food items
 
 class UserInput extends Component {
@@ -13,7 +22,8 @@ class UserInput extends Component {
             enteredFood: '', // users food input
             foodItemsObj: [], // array of objects created from search results
             err: '', // error message
-            calories: 0
+            calories: 0,
+            caloriesToday: 0
         };
     }
 
@@ -90,11 +100,11 @@ class UserInput extends Component {
 
     selected = (event) => { // the user selected search item
 
-        const selectedKey = event.target.getAttribute('id');
-        const foodSelection = this.state.foodItemsObj[selectedKey];
+        const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
+        const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
         const selectedName = foodSelection.name;
         const selectedBrand = foodSelection.brand;
-        const selectedCalories = foodSelection.calories;
+        const selectedCalories = Math.round(foodSelection.calories); // round the calories value to the nearest whole number
         const selectedServing = foodSelection.serving;
         // add date and time properties using: moment.js
         const selectionDate = moment().format('dddd Do MMMM YYYY'); // format - Saturday 5th May 2018
@@ -102,14 +112,33 @@ class UserInput extends Component {
         const selectionDay = moment().format('dddd'); // format - Saturday
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
-        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-date={selectionDate} data-id={key} key={key}>{calendar}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-date={selectionDate} data-id={key.toString()} key={key}>{selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
-        this.setState({calories: Math.round(this.state.calories + selectedCalories)}); // set the total calories consumed
+        this.calorieCounter(); // call calorieCounter method
+        //this.setState({caloriesToday: this.state.caloriesToday + selectedCalories});
+
         console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', this.state.selectedFoodItems, 'selectedFoodItems');
     }
 
-    removeItem = (event) => { // delete items from the report
+    calorieCounter = () => { // set calories counters
+
+        const len = selections.length;
+        let calToday = 0;
+        for (let i = 0; i < len; i++) {
+            if (moment().calendar() === 'Today' && now === selections[i].props['data-date']) { // if its today
+                calToday = calToday + selections[i].props['data-calories'];
+            }// else {
+             //   this.setState({calories: this.state.calories + cal})
+            //}
+            //this.setState({caloriesToday: this.state.calories + cal})
+        }
+        this.setState({caloriesToday: calToday})
+    }
+
+    removeItem = (event) => { // remove item from the report
 
         const deleteItem = event.target.dataset.id; // get the 'data-id' value);
         const l = this.state.selectedFoodItems.length;
@@ -117,11 +146,11 @@ class UserInput extends Component {
         selections = [].concat(this.state.selectedFoodItems); // Clone array with concat
 
         for (let i = 0; i < l; i++) {
-            deletedCalories = Math.round(this.state.selectedFoodItems[i].props['data-calories']); // use .props['data-id'] to access react jsx properties
+            deletedCalories = this.state.selectedFoodItems[i].props['data-calories']; // use .props['data-id'] to access react jsx properties
             let sel = this.state.selectedFoodItems[i].props['data-id'];
             if (sel === deleteItem) { // find the item that needs deleting from the selectedFoodItems array
                 selections.splice([i], 1); // delete using splice and its index
-                this.setState({calories: this.state.calories - deletedCalories}) // remove the corresponding number of calories from total
+                this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}) // remove the corresponding number of calories from total
                 this.setState({selectedFoodItems: selections});
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
@@ -154,8 +183,10 @@ class UserInput extends Component {
                 <section className="item-c">
                     <h2>Your Report</h2>
                     <h3>Total Calories: <span>{this.state.calories}</span></h3>
+                    <h3>Todays Calories: <span>{this.state.caloriesToday}</span></h3>
                     <h3>This Week: <span>{this.state.caloriesThisWeek}</span></h3>
-                    <h3>Food Consumed:</h3>
+                    <div className="google-chart"></div>
+                    <h3>Food Log:</h3>
                     <div className="report-results">
                         <ul className="report-list">
                             {this.state.selectedFoodItems}
