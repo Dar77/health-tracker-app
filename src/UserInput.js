@@ -159,7 +159,7 @@ class UserInput extends Component {
                 this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}) // remove the corresponding number of calories from total
                 this.setState({calories: this.state.calories - deletedCalories})
                 this.setState({selectedFoodItems: selections});
-            } else {
+            } else if (moment().calendar() === 'Today' && now !== this.state.selectedFoodItems[i].props['data-date']) {
                 this.setState({reportErr: 'Sorry you can only remove items added today!'})
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
