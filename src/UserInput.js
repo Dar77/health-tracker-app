@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Logo from './Logo';
+import TotalCalories from './TotalCalories';
+import TodaysCalories from './TodaysCalories';
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -22,6 +24,7 @@ class UserInput extends Component {
             enteredFood: '', // users food input
             foodItemsObj: [], // array of objects created from search results
             err: '', // error message
+            reportErr: '',
             calories: 0,
             caloriesToday: 0
         };
@@ -100,6 +103,7 @@ class UserInput extends Component {
 
     selected = (event) => { // the user selected search item
 
+        this.setState({reportErr: ''}) // empty any error messages
         const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
         const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
         const selectedName = foodSelection.name;
@@ -125,33 +129,38 @@ class UserInput extends Component {
 
     calorieCounter = () => { // set calories counters
 
-        const len = selections.length;
+        const l = selections.length;
+        let cal = 0;
         let calToday = 0;
-        for (let i = 0; i < len; i++) {
+        for (let i = 0; i < l; i++) {
             if (moment().calendar() === 'Today' && now === selections[i].props['data-date']) { // if its today
+                cal = cal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
-            }// else {
-             //   this.setState({calories: this.state.calories + cal})
-            //}
-            //this.setState({caloriesToday: this.state.calories + cal})
+            } else {
+                cal = cal + selections[i].props['data-calories'];
+            }
         }
-        this.setState({caloriesToday: calToday})
+        this.setState({calories: cal});
+        this.setState({caloriesToday: calToday});
     }
 
     removeItem = (event) => { // remove item from the report
 
-        const deleteItem = event.target.dataset.id; // get the 'data-id' value);
+        const deleteItem = event.target.dataset.id; // get the 'data-id' value of the item to be deleted;
         const l = this.state.selectedFoodItems.length;
         let deletedCalories = 0;
         selections = [].concat(this.state.selectedFoodItems); // Clone array with concat
 
         for (let i = 0; i < l; i++) {
             deletedCalories = this.state.selectedFoodItems[i].props['data-calories']; // use .props['data-id'] to access react jsx properties
-            let sel = this.state.selectedFoodItems[i].props['data-id'];
-            if (sel === deleteItem) { // find the item that needs deleting from the selectedFoodItems array
+            let sel = this.state.selectedFoodItems[i].props['data-id']; // compare data-id's
+            if (sel === deleteItem && moment().calendar() === 'Today' && now === this.state.selectedFoodItems[i].props['data-date']) { // find the item that needs deleting from the selectedFoodItems array
                 selections.splice([i], 1); // delete using splice and its index
                 this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}) // remove the corresponding number of calories from total
+                this.setState({calories: this.state.calories - deletedCalories})
                 this.setState({selectedFoodItems: selections});
+            } else {
+                this.setState({reportErr: 'Sorry you can only remove items added today!'})
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
         }
@@ -182,11 +191,12 @@ class UserInput extends Component {
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
-                    <h3>Total Calories: <span>{this.state.calories}</span></h3>
-                    <h3>Todays Calories: <span>{this.state.caloriesToday}</span></h3>
+                    <TotalCalories calories = {this.state.calories}/>
+                    <TodaysCalories calories = {this.state.caloriesToday}/>
                     <h3>This Week: <span>{this.state.caloriesThisWeek}</span></h3>
                     <div className="google-chart"></div>
                     <h3>Food Log:</h3>
+                    <p className="err-msg">{this.state.reportErr}</p>
                     <div className="report-results">
                         <ul className="report-list">
                             {this.state.selectedFoodItems}
