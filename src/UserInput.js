@@ -8,10 +8,15 @@ const moment = require('moment');
 moment.locale('en', {
     calendar : {
         sameDay : '[Today]',
-    }
+    },
+    week: {
+        dow: 1, // start 1st day of week on Monday instead of Sunday default
+    },
 });
-let now = moment().format('dddd Do MMMM YYYY'); // the current date 'when function is called'
-//let now = moment('Friday 11th May 2018')// used for testing DELETE
+
+let now = moment().format('dddd Do MMMM YYYY'); // the current date
+let nowDefault = moment().format("YYYY MM DD"); // current date in default format
+//let nowDefault = moment('2018 05 13');// used for testing DELETE
 
 let selections = []; // a temp array to push user selected food items
 
@@ -26,7 +31,8 @@ class UserInput extends Component {
             err: '', // error message
             reportErr: '',
             calories: 0,
-            caloriesToday: 0
+            caloriesToday: 0,
+            caloriesWeek: 0
         };
     }
 
@@ -111,13 +117,14 @@ class UserInput extends Component {
         const selectedCalories = Math.round(foodSelection.calories); // round the calories value to the nearest whole number
         const selectedServing = foodSelection.serving;
         // add date and time properties using: moment.js
-        const selectionDate = moment().format('dddd Do MMMM YYYY'); // format - Saturday 5th May 2018
+        const selectionDate = moment().format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
+        const dateDefault = moment().format("YYYY MM DD"); // default format - '2018-05-31'
         const calendar = moment().calendar();
-        const selectionDay = moment().format('dddd'); // format - Saturday
+        const selectionDay = moment().format('dddd'); // format - 'Saturday'
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
 
-        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-date={selectionDate} data-id={key.toString()} key={key}>{selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-id={key.toString()} key={key}>{selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
@@ -130,18 +137,25 @@ class UserInput extends Component {
     calorieCounter = () => { // set calories counters
 
         const l = selections.length;
-        let cal = 0;
+        let calTotal = 0;
         let calToday = 0;
+        let calWeek = 0;
         for (let i = 0; i < l; i++) {
-            if (moment().calendar() === 'Today' && now === selections[i].props['data-date']) { // if its today
-                cal = cal + selections[i].props['data-calories'];
+            console.log(moment(selections[i].props['data-default']).isSame(nowDefault, 'week'), 'if', nowDefault, 'nowDefault', selections[i].props['data-default'], 'data-default')
+            if (moment().calendar() === 'Today' && nowDefault === selections[i].props['data-default']) { // if its today
+                calTotal = calTotal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
+                calWeek = calWeek + selections[i].props['data-calories'];
+            } else if (moment(selections[i].props['data-default']).isSame(nowDefault, 'week')) { // if its this week but not today
+                calWeek = calWeek + selections[i].props['data-calories'];
+                calTotal = calTotal + selections[i].props['data-calories'];
             } else {
-                cal = cal + selections[i].props['data-calories'];
+                calTotal = calTotal + selections[i].props['data-calories'];
             }
         }
-        this.setState({calories: cal});
+        this.setState({calories: calTotal});
         this.setState({caloriesToday: calToday});
+        this.setState({caloriesWeek: calWeek});
     }
 
     removeItem = (event) => { // remove item from the report
@@ -154,12 +168,13 @@ class UserInput extends Component {
         for (let i = 0; i < l; i++) {
             deletedCalories = this.state.selectedFoodItems[i].props['data-calories']; // use .props['data-id'] to access react jsx properties
             let sel = this.state.selectedFoodItems[i].props['data-id']; // compare data-id's
-            if (sel === deleteItem && moment().calendar() === 'Today' && now === this.state.selectedFoodItems[i].props['data-date']) { // find the item that needs deleting from the selectedFoodItems array
+            if (sel === deleteItem && moment().calendar() === 'Today' && nowDefault === this.state.selectedFoodItems[i].props['data-default']) { // find the item that needs deleting from the selectedFoodItems array
                 selections.splice([i], 1); // delete using splice and its index
-                this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}) // remove the corresponding number of calories from total
-                this.setState({calories: this.state.calories - deletedCalories})
+                this.setState({calories: this.state.calories - deletedCalories});
+                this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}); // remove the corresponding number of calories from total
+                this.setState({caloriesWeek: this.state.caloriesWeek - deletedCalories});
                 this.setState({selectedFoodItems: selections});
-            } else if (moment().calendar() === 'Today' && now !== this.state.selectedFoodItems[i].props['data-date']) {
+            } else if (moment().calendar() === 'Today' && nowDefault !== this.state.selectedFoodItems[i].props['data-default']) {
                 this.setState({reportErr: 'Sorry you can only remove items added today!'})
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
@@ -191,11 +206,11 @@ class UserInput extends Component {
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
-                    <TotalCalories calories = {this.state.calories}/>
                     <TodaysCalories calories = {this.state.caloriesToday}/>
-                    <h3>This Week: <span>{this.state.caloriesThisWeek}</span></h3>
+                    <h3>This Week: <span>{this.state.caloriesWeek}</span></h3>
+                    <TotalCalories calories = {this.state.calories}/>
                     <div className="google-chart"></div>
-                    <h3>Food Log:</h3>
+                    <h3>Food Log: {selections.length === 1? `${selections.length} item` : `${selections.length} items`}</h3>
                     <p className="err-msg">{this.state.reportErr}</p>
                     <div className="report-results">
                         <ul className="report-list">
