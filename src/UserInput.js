@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Logo from './Logo';
-import TotalCalories from './TotalCalories';
 import TodaysCalories from './TodaysCalories';
+import WeeksCalories from './WeeksCalories';
+import TotalCalories from './TotalCalories';
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -13,10 +14,8 @@ moment.locale('en', {
         dow: 1, // start 1st day of week on Monday instead of Sunday default
     },
 });
-
-let now = moment().format('dddd Do MMMM YYYY'); // the current date
-let nowDefault = moment().format("YYYY MM DD"); // current date in default format
-//let nowDefault = moment('2018 05 13');// used for testing DELETE
+let now = moment().format("YYYY MM DD"); // current date
+//let now = moment('2018 05 13');// used for testing DELETE
 
 let selections = []; // a temp array to push user selected food items
 
@@ -124,12 +123,11 @@ class UserInput extends Component {
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
 
-        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-id={key.toString()} key={key}>{selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-id={key.toString()} key={key}>Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
         this.calorieCounter(); // call calorieCounter method
-        //this.setState({caloriesToday: this.state.caloriesToday + selectedCalories});
 
         console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', this.state.selectedFoodItems, 'selectedFoodItems');
     }
@@ -141,12 +139,12 @@ class UserInput extends Component {
         let calToday = 0;
         let calWeek = 0;
         for (let i = 0; i < l; i++) {
-            console.log(moment(selections[i].props['data-default']).isSame(nowDefault, 'week'), 'if', nowDefault, 'nowDefault', selections[i].props['data-default'], 'data-default')
-            if (moment().calendar() === 'Today' && nowDefault === selections[i].props['data-default']) { // if its today
+            console.log(moment(selections[i].props['data-default']).isSame(now, 'week'), 'if', now, 'now', selections[i].props['data-default'], 'data-default')
+            if (moment().calendar() === 'Today' && now === selections[i].props['data-default']) { // if its today
                 calTotal = calTotal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
                 calWeek = calWeek + selections[i].props['data-calories'];
-            } else if (moment(selections[i].props['data-default']).isSame(nowDefault, 'week')) { // if its this week but not today
+            } else if (moment(selections[i].props['data-default']).isSame(now, 'week')) { // if its this week but not today
                 calWeek = calWeek + selections[i].props['data-calories'];
                 calTotal = calTotal + selections[i].props['data-calories'];
             } else {
@@ -168,13 +166,13 @@ class UserInput extends Component {
         for (let i = 0; i < l; i++) {
             deletedCalories = this.state.selectedFoodItems[i].props['data-calories']; // use .props['data-id'] to access react jsx properties
             let sel = this.state.selectedFoodItems[i].props['data-id']; // compare data-id's
-            if (sel === deleteItem && moment().calendar() === 'Today' && nowDefault === this.state.selectedFoodItems[i].props['data-default']) { // find the item that needs deleting from the selectedFoodItems array
+            if (sel === deleteItem && moment().calendar() === 'Today' && now === this.state.selectedFoodItems[i].props['data-default']) { // find the item that needs deleting from the selectedFoodItems array
                 selections.splice([i], 1); // delete using splice and its index
                 this.setState({calories: this.state.calories - deletedCalories});
                 this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}); // remove the corresponding number of calories from total
                 this.setState({caloriesWeek: this.state.caloriesWeek - deletedCalories});
                 this.setState({selectedFoodItems: selections});
-            } else if (moment().calendar() === 'Today' && nowDefault !== this.state.selectedFoodItems[i].props['data-default']) {
+            } else if (moment().calendar() === 'Today' && now !== this.state.selectedFoodItems[i].props['data-default']) {
                 this.setState({reportErr: 'Sorry you can only remove items added today!'})
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
@@ -195,7 +193,7 @@ class UserInput extends Component {
                         <input value={this.state.enteredFood} onChange={this.onChange} placeholder="enter food type" type="text" aria-label="enter a food type"/>
                         <button>search</button>
                     </form>
-                    <h3>Select From The List Below</h3>
+                    <h3>{this.state.foodItems? 'Please Select From The List' : ''}</h3>
                     <p className="err-msg">{this.state.err}</p>
                     <div className="search-results">
                         <ul>
@@ -207,10 +205,10 @@ class UserInput extends Component {
                 <section className="item-c">
                     <h2>Your Report</h2>
                     <TodaysCalories calories = {this.state.caloriesToday}/>
-                    <h3>This Week: <span>{this.state.caloriesWeek}</span></h3>
+                    <WeeksCalories calories = {this.state.caloriesWeek}/>
                     <TotalCalories calories = {this.state.calories}/>
                     <div className="google-chart"></div>
-                    <h3>Food Log: {selections.length === 1? `${selections.length} item` : `${selections.length} items`}</h3>
+                    <h3>Food Log: <span>{selections.length === 1? `${selections.length} item` : `${selections.length} items`}</span></h3>
                     <p className="err-msg">{this.state.reportErr}</p>
                     <div className="report-results">
                         <ul className="report-list">
