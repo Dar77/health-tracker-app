@@ -3,6 +3,8 @@ import Logo from './Logo';
 import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
 import TotalCalories from './TotalCalories';
+import GoogleChart from './GoogleChart';
+//import D3Chart from './D3Chart';
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -123,7 +125,7 @@ class UserInput extends Component {
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
 
-        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-id={key.toString()} key={key}>Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
@@ -207,7 +209,7 @@ class UserInput extends Component {
                     <TodaysCalories calories = {this.state.caloriesToday}/>
                     <WeeksCalories calories = {this.state.caloriesWeek}/>
                     <TotalCalories calories = {this.state.calories}/>
-                    <div className="google-chart"></div>
+                    <GoogleChart/>
                     <h3>Food Log: <span>{selections.length === 1? `${selections.length} item` : `${selections.length} items`}</span></h3>
                     <p className="err-msg">{this.state.reportErr}</p>
                     <div className="report-results">
