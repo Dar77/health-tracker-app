@@ -1,10 +1,4 @@
-/*
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-*/
+/* index.css */
 
 body {
   background: #ddf2f0;
@@ -30,7 +24,7 @@ ul {
 }
 
 span {
-  color: 4bb177;
+  color: #4bb177;
 }
 
 section {
@@ -43,6 +37,28 @@ section {
 button {
   cursor: pointer;
 }
+
+/* tool tip styles start */
+li[data-descr] {
+  cursor: pointer;
+  position: relative;
+}
+
+li[data-descr]:hover::after {
+  content: attr(data-descr);
+  border: 1px solid #e85b5b;
+  border-radius: 5px;
+  background-color: #f4dfdb;
+  position: absolute;
+  right: 41%;
+  top: 25%;
+  z-index: 100;
+  padding: .7rem;
+  color: #813d3d;
+  font-size: 14px;
+  font-weight: 400;
+}
+/* tool tip styles end */
 
 /* css grid styles */
 .item-a {
@@ -108,9 +124,14 @@ button {
   section {
     border-radius: 47px 20px 94px 20px;
     border: 1px solid #6ab316;
-    height: 600px;
+    height: 700px;
   }
 
+  .nutri-logo {
+    position: absolute;
+    display: block;
+    bottom: 15%;
+  }
   .search-results {
     margin: 0 auto;
     overflow: auto;
@@ -125,7 +146,7 @@ button {
 
 /* css grid styles */
   .container {
-    grid-gap: 100px 100px; /* short hand for grid-column-gap and grid-row-gap */
+    grid-gap: 20px 100px; /* short hand for grid-column-gap and grid-row-gap */
     grid-template-columns: 1fr 2fr 2fr  2fr 1fr; /* free space split into 5 equal cells */
     grid-template-rows: auto 600px;
     grid-template-areas:
