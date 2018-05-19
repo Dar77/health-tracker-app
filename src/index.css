@@ -23,6 +23,10 @@ ul {
   padding: 0;
 }
 
+hr {
+  border-top: 1px solid #6ab316;
+}
+
 span {
   color: #4bb177;
 }
@@ -70,7 +74,11 @@ li[data-descr]:hover::after {
 }
 
 .item-c {
-  grid-area: main;
+  grid-area: report;
+}
+
+.item-d {
+  grid-area: food-log;
 }
 
 .container {
@@ -83,7 +91,8 @@ li[data-descr]:hover::after {
   grid-template-areas:
     "header"
     "sidebar"
-    "main";
+    "report"
+    "food-log";
   justify-items: center; /* Aligns the content inside a grid item along the row axis */
 }
 /* end - css grid styles */
@@ -119,6 +128,10 @@ li[data-descr]:hover::after {
   border: 1px solid #f8bebe;
 }
 
+.chart {
+  width: 400px;
+}
+
 @media only screen and (min-width: 1000px) {
   /* styles applied above 1000px */
   section {
@@ -141,17 +154,17 @@ li[data-descr]:hover::after {
   .report-results {
     margin: 0 auto;
     overflow: auto;
-    height: 350px;
+    height: 450px;
   }
 
 /* css grid styles */
   .container {
     grid-gap: 20px 100px; /* short hand for grid-column-gap and grid-row-gap */
-    grid-template-columns: 1fr 2fr 2fr  2fr 1fr; /* free space split into 5 equal cells */
+    grid-template-columns: 1fr 2fr 2fr 2fr 1fr; /* free space split into 5 equal cells */
     grid-template-rows: auto 600px;
     grid-template-areas:
       "header header header header header" /* the header should take up 5 cells */
-      ". sidebar main main ."; /* the sidebar 1 cell and main 2 cells with a blank cell either side */
+      ". sidebar report food-log ."; /* the sidebar 1 cell and main 2 cells with a blank cell either side */
   }
 /* end - css grid styles */
 
@@ -166,4 +179,9 @@ li[data-descr]:hover::after {
   h1 {
     font: 2.5em/1.5em 'Gugi', cursive;
   }
+
+  .chart {
+    width: 600px;
+  }
+
 }
