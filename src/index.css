@@ -1,12 +1,13 @@
 /* index.css */
 
 body {
-  background: #ddf2f0;
   font: 14px/1.5em "Lato", sans-serif;
+  background: url(images/avo-egg.jpg) #000 no-repeat center center fixed;
 }
 
 h1 {
   font: 2em/1.5em 'Gugi', cursive;
+  color: white;
   margin-top: 5%;
 }
 
@@ -40,6 +41,17 @@ section {
 
 button {
   cursor: pointer;
+}
+
+/* input styles */
+input[type=text] {
+  border: 1px solid #6ab316;
+  border-radius: 4px;
+  background-color: #ddf2f0;
+  font: 1em/1.5em 'Gugi', cursive;
+  color: black;
+  padding: 5px;
+  width: 93%;
 }
 
 /* tool tip styles start */
@@ -83,7 +95,7 @@ li[data-descr]:hover::after {
 
 .container {
   display: grid;
-  grid-gap: 20px 20px; /* short hand for grid-column-gap and grid-row-gap */
+  grid-gap: 50px 20px; /* short hand for grid-column-gap and grid-row-gap */
   grid-template-columns: auto;
   grid-template-rows: auto;
   grid-template-areas:
@@ -94,6 +106,10 @@ li[data-descr]:hover::after {
   justify-items: center; /* Aligns the content inside a grid item along the row axis */
 }
 /* end - css grid styles */
+
+.video-background {
+  display: none;
+}
 
 .err-msg {
   color: orange;
@@ -170,9 +186,32 @@ li[data-descr]:hover::after {
 
 @media only screen and (min-width: 750px) {
   /* styles applied above 750px */
+  video {
+    display: block;
+  }
+
+  .video-background {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: url(images/avo-egg.jpg) no-repeat;
+    background-size: cover;
+  }
+
   .chart {
     width: 420px;
   }
+
 }
 
 @media only screen and (min-width: 1000px) {
@@ -216,12 +255,20 @@ li[data-descr]:hover::after {
   section {
     width: 250px;
   }
+
+  .chart {
+    width: 250px;
+  }
 }
 
 @media only screen and (min-width: 1700px) {
   /* styles applied above 1700px */
   section {
     width: auto;
+  }
+
+  .item-b, .item-d {
+    width: 250px;
   }
 
   .chart {
@@ -232,7 +279,6 @@ li[data-descr]:hover::after {
   .container {
     grid-gap: 20px 100px; /* short hand for grid-column-gap and grid-row-gap */
     grid-template-columns: 1fr 2fr 2fr 2fr 1fr; /* free space split into 5 equal cells */
-    grid-template-rows: auto 600px;
     grid-template-areas:
       "header header header header header" /* the header should take up 5 cells */
       ". sidebar report food-log ."; /* the sidebar 1 cell and main 2 cells with a blank cell either side */
