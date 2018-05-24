@@ -62,17 +62,16 @@ li[data-descr] {
 
 li[data-descr]:hover::after {
   content: attr(data-descr);
-  border: 1px solid #e85b5b;
+  border: 7px solid #f2b0b0;
   border-radius: 5px;
-  background-color: #f4dfdb;
+  background-color: #f8d9d9;
   position: absolute;
-  right: 41%;
-  top: 25%;
+  right: 24%;
+  top: 33%;
   z-index: 100;
   padding: .7rem;
   color: #813d3d;
-  font-size: 14px;
-  font-weight: 400;
+  font: 1em/1.5em 'Gugi', cursive;
 }
 /* tool tip styles end */
 
