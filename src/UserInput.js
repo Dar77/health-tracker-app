@@ -4,7 +4,6 @@ import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
 import TotalCalories from './TotalCalories';
 import { Chart } from './react-google-charts';
-//import D3Chart from './D3Chart';
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -17,7 +16,7 @@ moment.locale('en', {
     },
 });
 let now = moment().format("YYYY MM DD"); // current date
-//let now = moment('2018 05 13');// used for testing DELETE
+//let now = moment('2018 05 21');// used for testing DELETE
 
 let selections = []; // a temp array to push user selected food items
 
@@ -38,10 +37,9 @@ class UserInput extends Component {
             options: {
                 title: 'This Weeks Overview',
                 pieSliceText: 'value',
-                pieSliceTextStyle: {color: 'black', fontSize: 18},
+                pieSliceTextStyle: {color: 'black', fontSize: 14},
                 is3D: true,
-                colors:['#49eadb','#49c0ea', '#5f49ea', '#b049ea', '#49ea8e','#c5ea49','#ea9849'],
-                chartArea:{left:'30%',top:'150px', width:'80%',height:'75%'}
+                colors:['#49eadb','#49c0ea', '#5f49ea', '#b049ea', '#49ea8e','#c5ea49','#ea9849']
             },
             data: [
                 ['Day', 'Calories'],
@@ -139,12 +137,11 @@ class UserInput extends Component {
         // add date and time properties using: moment.js
         const selectionDate = moment().format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
         const dateDefault = moment().format("YYYY MM DD"); // default format - '2018-05-31'
-        const calendar = moment().calendar();
         const selectionDay = moment().format('dddd'); // format - 'Saturday'
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
 
-        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+        const output = <li onClick={this.removeItem} onMouseOver={this.deleteStyle} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
@@ -188,58 +185,60 @@ class UserInput extends Component {
         this.setState({caloriesWeek: calWeek});
     }
 
+    // helper function to setState on the chart data without mutating state
+    // ref - stackoverflow: https://stackoverflow.com/questions/35174489/reactjs-setstate-of-object-key-in-array?noredirect=1&lq=1
+    dataUpdate = (key, arrayItem) => {
+        const data = this.state.data.slice();
+        data[key] = arrayItem;
+        this.setState({ data });
+    }
+
     chartData = (day, calories, itemsDate) => { // update chart data
 
         // check whether Monday has chart data already, if so clear the old weeks data first
         if (itemsDate !== null && day === 'Monday' && this.state.data[1] !== ['Mon', 0]) {
-            this.state.data[1] = ['Mon', 0];
-            this.state.data[2] = ['Tues', 0];
-            this.state.data[2] = ['Tues', 0];
-            this.state.data[3] = ['Weds', 0];
-            this.state.data[4] = ['Thurs', 0];
-            this.state.data[5] = ['Fri', 0];
-            this.state.data[6] = ['Sat', 0];
-            this.state.data[7] = ['Sun', 0];
+            this.dataUpdate(1, ['Mon', 0]);
+            this.dataUpdate(2, ['Tues', 0]);
+            this.dataUpdate(3, ['Weds', 0]);
+            this.dataUpdate(4, ['Thurs', 0]);
+            this.dataUpdate(5, ['Fri', 0]);
+            this.dataUpdate(6, ['Sat', 0]);
+            this.dataUpdate(7, ['Sun', 0]);
         }
 
         switch (day) {
 
             case 'Monday':
-                if (this.state.data[1] === 0) { // if Monday is currently equal to 0 set its calorie value
-                    let mon = this.state.data[1] = ['Mon', calories];
-                } else {
-                    this.state.data[1] = 0; // set
-                    let mon = this.state.data[1] = ['Mon', calories];
-                }
+                this.dataUpdate(1, ['Mon', calories]);
                 break;
 
             case 'Tuesday':
-                let tues = this.state.data[2] = ['Tues', calories];
+                this.dataUpdate(2, ['Tues', calories]);
                 break;
 
             case 'Wednesday':
-                let weds = this.state.data[3] = ['Weds', calories];
+                this.dataUpdate(3, ['Weds', calories]);
                 break;
 
             case 'Thursday':
-                let thurs = this.state.data[4] = ['Thurs', calories];
+                this.dataUpdate(4, ['Thurs', calories]);
                 break;
 
             case 'Friday':
-                let fri = this.state.data[5] = ['Fri', calories];
+                this.dataUpdate(5, ['Fri', calories]);
                 break;
 
             case 'Saturday':
-                let sat = this.state.data[6] = ['Sat', calories];
+                this.dataUpdate(6, ['Sat', calories]);
                 break;
 
             case 'Sunday':
-                let sun = this.state.data[7] = ['Sun', calories];
+                this.dataUpdate(7, ['Sun', calories]);
                 break;
         }
     }
 
-    removeItem = (event) => { // remove item from the report
+    removeItem = (event) => { // remove item from the food log
 
         const deleteItem = event.target.dataset.id; // get the 'data-id' value of the item to be deleted;
         const l = this.state.selectedFoodItems.length;
@@ -282,7 +281,6 @@ class UserInput extends Component {
                     <h3>What Did You Eat?</h3>
                     <form onSubmit={this.onSubmit}>
                         <input value={this.state.enteredFood} onChange={this.onChange} placeholder="enter food type" type="text" aria-label="enter a food type"/>
-                        <button>search</button>
                     </form>
                     <h3>{this.state.foodItems? 'Please Select From The List' : ''}</h3>
                     <hr/>
@@ -292,7 +290,6 @@ class UserInput extends Component {
                             {this.state.foodItems}
                         </ul>
                     </div>
-                    <Logo/>
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
@@ -311,6 +308,7 @@ class UserInput extends Component {
                             legend_toggle
                         />
                     </div>
+                    <Logo/>
                 </section>
                 <section className="item-d">
                     <h2>Food Log: <span>{selections.length === 1? `${selections.length} item` : `${selections.length} items`}</span></h2>
@@ -323,7 +321,6 @@ class UserInput extends Component {
                             {this.state.selectedFoodItems}
                         </ul>
                     </div>
-                    <Logo/>
                 </section>
             </div>
         );
