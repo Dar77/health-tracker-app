@@ -4,6 +4,7 @@ import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
 import TotalCalories from './TotalCalories';
 import { Chart } from './react-google-charts';
+import ReportLog from './ReportLog';
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -33,6 +34,7 @@ class UserInput extends Component {
             calories: 0,
             caloriesToday: 0,
             caloriesWeek: 0,
+            log: 0,
             // react-google-charts setup below
             options: {
                 title: 'This Weeks Overview',
@@ -54,7 +56,98 @@ class UserInput extends Component {
         };
     }
 
-    onChange = (event) => {
+    // local storage with react - ref: https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
+    componentDidMount() {
+
+        this.hydrateStateWithLocalStorage();
+
+        // add event listener to save state to localStorage
+        // when user leaves/refreshes the page
+        window.addEventListener(
+          "beforeunload",
+          this.saveStateToLocalStorage.bind(this)
+        );
+    }
+/*
+    componentDidMount() {
+        this.hydrateStateWithLocalStorage();
+    }
+*/
+    componentWillUnmount() {
+
+        window.removeEventListener(
+          "beforeunload",
+          this.saveStateToLocalStorage.bind(this)
+        );
+
+        // saves if component has a chance to unmount
+        this.saveStateToLocalStorage();
+    }
+
+    hydrateStateWithLocalStorage() {
+
+        // if the key exists in localStorage
+        if (localStorage.hasOwnProperty('selectedFoodItems')) {
+            // get the key's value from localStorage
+            let value = localStorage.getItem('selectedFoodItems');
+
+            // parse the localStorage string and setState
+            try {
+                value = JSON.parse(value);
+                this.setState({ ['selectedFoodItems']: value });
+                const returnedItems = value;
+                for (let item in returnedItems) {
+                    const selectedName = returnedItems[item].props.children[4];
+                    const selectedBrand = returnedItems[item].props.children[7];
+                    const selectedCalories = returnedItems[item].props['data-calories']; // round the calories value to the nearest whole number
+                    const selectedServing = returnedItems[item].props.children[13];
+                    // add date and time properties using: moment.js
+                    const selectionDate = returnedItems[item].props['data-date']; // format - 'Saturday 5th May 2018'
+                    const dateDefault = returnedItems[item].props['data-default']; // default format - '2018-05-31'
+                    const selectionDay = returnedItems[item].props['data-day']; // format - 'Saturday'
+                    // create a unique key for each list item
+                    const key = returnedItems[item].key;
+
+                    const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+                    selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
+                }
+                console.log(selections, 'selections', value, 'value');
+            } catch (e) {
+                // handle empty string
+                this.setState({ ['selectedFoodItems']: value });
+            }
+        }
+        // for all items in state
+        for (let key in this.state) {
+            // if the key exists in localStorage
+            if (localStorage.hasOwnProperty(key) && key !== 'selectedFoodItems') {
+                // get the key's value from localStorage
+                let value = localStorage.getItem(key);
+
+                // parse the localStorage string and setState
+                try {
+                    value = JSON.parse(value);
+                    this.setState({ [key]: value });
+                } catch (e) {
+                    // handle empty string
+                    this.setState({ [key]: value });
+                }
+            }
+        }
+    }
+
+    saveStateToLocalStorage() {
+
+        // for every item in React state
+        for (let key in this.state) {
+            // save to localStorage
+            if (key !== 'selectedFoodItems') {
+                localStorage.setItem(key, JSON.stringify(this.state[key]));
+            }
+        }
+    }
+
+    onChange = (event) => { // the value entered in the input
 
         this.setState({ enteredFood: event.target.value });
     }
@@ -128,6 +221,7 @@ class UserInput extends Component {
     selected = (event) => { // the user selected search item
 
         this.setState({reportErr: ''}) // empty any error messages
+
         const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
         const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
         const selectedName = foodSelection.name;
@@ -141,10 +235,13 @@ class UserInput extends Component {
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
 
-        const output = <li onClick={this.removeItem} onMouseOver={this.deleteStyle} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
+        this.setState({log: selections.length});
+
+        localStorage.setItem('selectedFoodItems', JSON.stringify(selections)); // add to local storage
         this.calorieCounter(); // call calorieCounter method
 
         console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', this.state.selectedFoodItems, 'selectedFoodItems');
@@ -239,7 +336,7 @@ class UserInput extends Component {
     }
 
     removeItem = (event) => { // remove item from the food log
-
+        console.log(this.state.selectedFoodItems, 'selectedFoodItems')
         const deleteItem = event.target.dataset.id; // get the 'data-id' value of the item to be deleted;
         const l = this.state.selectedFoodItems.length;
         let day = '';
@@ -257,6 +354,7 @@ class UserInput extends Component {
                 this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}); // remove the corresponding number of calories from total
                 this.setState({caloriesWeek: this.state.caloriesWeek - deletedCalories});
                 this.setState({selectedFoodItems: selections}); // set the adjusted selections array as selectedFoodItems new value
+                this.setState({log: selections.length});
                 // call chartData
                 day = this.state.selectedFoodItems[i].props['data-day'];
                 remove = this.state.caloriesToday - deletedCalories;
@@ -311,16 +409,12 @@ class UserInput extends Component {
                     <Logo/>
                 </section>
                 <section className="item-d">
-                    <h2>Food Log: <span>{selections.length === 1? `${selections.length} item` : `${selections.length} items`}</span></h2>
+                    <h2>Food Log: <span>{this.state.log === 1? `${this.state.log} item` : `${this.state.log} items`}</span></h2>
                     <hr/>
                     <TotalCalories calories = {this.state.calories}/>
                     <hr/>
                     <p className="err-msg">{this.state.reportErr}</p>
-                    <div className="report-results">
-                        <ul className="report-list">
-                            {this.state.selectedFoodItems}
-                        </ul>
-                    </div>
+                    <ReportLog list = {selections}/>
                 </section>
             </div>
         );
