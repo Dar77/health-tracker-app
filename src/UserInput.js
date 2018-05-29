@@ -110,8 +110,9 @@ class UserInput extends Component {
 
                     const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
                     selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
+                    this.setState({'selectedFoodItems': selections});
                 }
-                console.log(selections, 'selections', value, 'value');
+                console.log(this.state.selectedFoodItems, 'selectedFoodItems', value, 'value');
             } catch (e) {
                 // handle empty string
                 this.setState({ ['selectedFoodItems']: value });
