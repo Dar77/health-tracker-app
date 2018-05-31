@@ -17,7 +17,6 @@ moment.locale('en', {
     },
 });
 let now = moment().format("YYYY MM DD"); // current date
-//let now = moment('2018 05 21');// used for testing DELETE
 
 let selections = []; // a temp array to push user selected food items
 
@@ -30,7 +29,7 @@ class UserInput extends Component {
             enteredFood: '', // users food input
             foodItemsObj: [], // array of objects created from search results
             err: '', // error message
-            reportErr: '',
+            reportErr: '', // error message
             calories: 0,
             caloriesToday: 0,
             caloriesWeek: 0,
@@ -56,7 +55,7 @@ class UserInput extends Component {
         };
     }
 
-    // local storage with react - ref: https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
+    /* local storage with react - ref: https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
     componentDidMount() {
 
         this.hydrateStateWithLocalStorage();
@@ -68,11 +67,7 @@ class UserInput extends Component {
           this.saveStateToLocalStorage.bind(this)
         );
     }
-/*
-    componentDidMount() {
-        this.hydrateStateWithLocalStorage();
-    }
-*/
+
     componentWillUnmount() {
 
         window.removeEventListener(
@@ -86,9 +81,9 @@ class UserInput extends Component {
 
     hydrateStateWithLocalStorage() {
 
-        // if the key exists in localStorage
+        // if selectedFoodItems exist in localStorage
         if (localStorage.hasOwnProperty('selectedFoodItems')) {
-            // get the key's value from localStorage
+            // get the selectedFoodItems value from localStorage
             let value = localStorage.getItem('selectedFoodItems');
 
             // parse the localStorage string and setState
@@ -96,7 +91,7 @@ class UserInput extends Component {
                 value = JSON.parse(value);
                 this.setState({ ['selectedFoodItems']: value });
                 const returnedItems = value;
-                for (let item in returnedItems) {
+                for (let item in returnedItems) { // construct jsx list items
                     const selectedName = returnedItems[item].props.children[4];
                     const selectedBrand = returnedItems[item].props.children[7];
                     const selectedCalories = returnedItems[item].props['data-calories']; // round the calories value to the nearest whole number
@@ -109,7 +104,7 @@ class UserInput extends Component {
                     const key = returnedItems[item].key;
 
                     const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
-                    selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
+                    selections.push(output); // instead of pushing to array, add to start of array using .unshift()
                     this.setState({'selectedFoodItems': selections});
                 }
                 console.log(this.state.selectedFoodItems, 'selectedFoodItems', value, 'value');
@@ -118,6 +113,7 @@ class UserInput extends Component {
                 this.setState({ ['selectedFoodItems']: value });
             }
         }
+
         // for all items in state
         for (let key in this.state) {
             // if the key exists in localStorage
@@ -147,7 +143,7 @@ class UserInput extends Component {
             }
         }
     }
-
+*/
     onChange = (event) => { // the value entered in the input
 
         this.setState({ enteredFood: event.target.value });
@@ -218,10 +214,10 @@ class UserInput extends Component {
                 this.setState({err: this.state.enteredFood === '' ? 'You Need to Enter a Food Type!' : 'Failed To Get Nutritionix Resources'})
             });
     }
-
+/*
     selected = (event) => { // the user selected search item
 
-        this.setState({reportErr: ''}) // empty any error messages
+        this.setState({reportErr: ''}); // empty any error messages
 
         const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
         const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
@@ -241,11 +237,38 @@ class UserInput extends Component {
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
         this.setState({log: selections.length});
-
-        localStorage.setItem('selectedFoodItems', JSON.stringify(selections)); // add to local storage
         this.calorieCounter(); // call calorieCounter method
+        localStorage.setItem('selectedFoodItems', JSON.stringify(selections)); // add to local storage
 
         console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', this.state.selectedFoodItems, 'selectedFoodItems');
+    }
+*/
+    selected = (event) => { // the user selected search item
+
+        this.setState({reportErr: ''}); // empty any error messages
+
+        const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
+        const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
+        const selectedName = foodSelection.name;
+        const selectedBrand = foodSelection.brand;
+        const selectedCalories = Math.round(foodSelection.calories); // round the calories value to the nearest whole number
+        const selectedServing = foodSelection.serving;
+        // add date and time properties using: moment.js
+        const selectionDate = moment().format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
+        const dateDefault = moment().format("YYYY MM DD"); // default format - '2018-05-31'
+        const selectionDay = moment().format('dddd'); // format - 'Saturday'
+        // create a unique key for each list item
+        const key = Math.random() * (100 - 10) + 10;
+
+        const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+
+        selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
+        //this.setState({selectedFoodItems: selections});
+        this.setState({log: selections.length});
+        this.calorieCounter(); // call calorieCounter method
+        localStorage.setItem('selectedFoodItems', JSON.stringify(selections)); // add to local storage
+
+        console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', selections, 'selections');
     }
 
     calorieCounter = () => { // set calories counters
@@ -294,7 +317,7 @@ class UserInput extends Component {
     chartData = (day, calories, itemsDate) => { // update chart data
 
         // check whether Monday has chart data already, if so clear the old weeks data first
-        if (itemsDate !== null && day === 'Monday' && this.state.data[1] !== ['Mon', 0]) {
+        if (itemsDate === true && day === 'Monday' && this.state.data[1] !== ['Mon', 0]) {
             this.dataUpdate(1, ['Mon', 0]);
             this.dataUpdate(2, ['Tues', 0]);
             this.dataUpdate(3, ['Weds', 0]);
@@ -335,9 +358,10 @@ class UserInput extends Component {
                 break;
         }
     }
-
+/*
     removeItem = (event) => { // remove item from the food log
-        console.log(this.state.selectedFoodItems, 'selectedFoodItems')
+        this.setState({reportErr: ''}); // empty any error messages
+        console.log(this.state.selectedFoodItems, 'selectedFoodItems');
         const deleteItem = event.target.dataset.id; // get the 'data-id' value of the item to be deleted;
         const l = this.state.selectedFoodItems.length;
         let day = '';
@@ -361,10 +385,43 @@ class UserInput extends Component {
                 remove = this.state.caloriesToday - deletedCalories;
                 this.chartData(day, remove);
             } else if (moment().calendar() === 'Today' && now !== this.state.selectedFoodItems[i].props['data-default']) {
-                this.setState({reportErr: 'Sorry you can only remove items added today!'})
+                this.setState({reportErr: 'Sorry you can only remove items added today!'});
             }
             console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
         }
+    }
+*/
+    removeItem = (event) => { // remove item from the food log
+        this.setState({reportErr: ''}); // empty any error messages
+        console.log(event.target.dataset.id, 'event.target');
+        const deleteItem = event.target.dataset.id; // get the 'data-id' value of the item to be deleted;
+        const l = selections.length;
+        let day = '';
+        let remove = 0;
+        let deletedCalories = 0;
+        let adjusted = [...selections]; // Clone selections array
+
+        for (let i = 0; i < l; i++) {
+            deletedCalories = selections[i].props['data-calories'];
+            let sel = selections[i].props['data-id']; // compare data-id's
+            // find the item that needs deleting from the selectedFoodItems array
+            if (sel === deleteItem && moment().calendar() === 'Today' && now === selections[i].props['data-default']) {
+                day = selections[i].props['data-day'];
+                remove = this.state.caloriesToday - deletedCalories;
+                this.setState({calories: this.state.calories - deletedCalories});
+                this.setState({caloriesToday: this.state.caloriesToday - deletedCalories}); // remove the corresponding number of calories from total
+                this.setState({caloriesWeek: this.state.caloriesWeek - deletedCalories});
+                // call chartData
+                this.chartData(day, remove);
+                adjusted.splice([i], 1); // delete using splice and its index
+            } else if (moment().calendar() === 'Today' && now !== selections[i].props['data-default']) {
+                this.setState({reportErr: 'Sorry you can only remove items added today!'});
+            }
+            console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
+        }
+        selections= []; // clear the old version of selections
+        selections = [...adjusted]; // fill with the contents of adjusted
+        this.setState({log: selections.length});
     }
 
     render() {
