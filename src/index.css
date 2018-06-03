@@ -47,7 +47,7 @@ button {
 input[type=text] {
   border: 1px solid #6ab316;
   border-radius: 4px;
-  background-color: #ddf2f0;
+  background-color: #ddf2e3;
   font: 1em/1.5em 'Gugi', cursive;
   color: black;
   padding: 5px;
@@ -115,7 +115,7 @@ li[data-descr]:hover::after {
 }
 
 .food-item {
-  background: #ddf2f0;
+  background: #ddf2e3;
   margin: 10px;
   padding: 7px;
   border-radius: 5px;
@@ -155,6 +155,10 @@ li[data-descr]:hover::after {
 
 .chart {
   width: 300px;
+}
+
+.log {
+  font-size: 0.8em;
 }
 
 @media only screen and (min-width: 500px) {
