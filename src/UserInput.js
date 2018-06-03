@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Logo from './Logo';
+import SearchResults from './SearchResults';
 import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
 import TotalCalories from './TotalCalories';
@@ -86,32 +87,25 @@ class UserInput extends Component {
             // get the selectedFoodItems value from localStorage
             let value = localStorage.getItem('selectedFoodItems');
 
-            // parse the localStorage string and setState
-            //try {
-                value = JSON.parse(value);
-                //this.setState({ ['selectedFoodItems']: value });
-                const returnedItems = value;
-                for (let item in returnedItems) { // construct jsx list items
-                    const selectedName = returnedItems[item].props.children[4];
-                    const selectedBrand = returnedItems[item].props.children[7];
-                    const selectedCalories = returnedItems[item].props['data-calories']; // round the calories value to the nearest whole number
-                    const selectedServing = returnedItems[item].props.children[13];
-                    // add date and time properties using: moment.js
-                    const selectionDate = returnedItems[item].props['data-date']; // format - 'Saturday 5th May 2018'
-                    const dateDefault = returnedItems[item].props['data-default']; // default format - '2018-05-31'
-                    const selectionDay = returnedItems[item].props['data-day']; // format - 'Saturday'
-                    // create a unique key for each list item
-                    const key = returnedItems[item].key;
+            value = JSON.parse(value);
+            const returnedItems = value;
+            for (let item in returnedItems) { // construct jsx list items
+                const selectedName = returnedItems[item].props.children[4];
+                const selectedBrand = returnedItems[item].props.children[7];
+                const selectedCalories = returnedItems[item].props['data-calories']; // round the calories value to the nearest whole number
+                const selectedServing = returnedItems[item].props.children[13];
+                // add date and time properties using: moment.js
+                const selectionDate = returnedItems[item].props['data-date']; // format - 'Saturday 5th May 2018'
+                const dateDefault = returnedItems[item].props['data-default']; // default format - '2018-05-31'
+                const selectionDay = returnedItems[item].props['data-day']; // format - 'Saturday'
+                // create a unique key for each list item
+                const key = returnedItems[item].key;
 
-                    const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
-                    selections.push(output); // fill the selections array
-                    this.setState({'selectedFoodItems': selections});
-                }
-                console.log(this.state.selectedFoodItems, 'selectedFoodItems', value, 'value');
-            //} catch (e) {
-                // handle empty string
-            //    this.setState({ ['selectedFoodItems']: value });
-            //}
+                const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
+                selections.push(output); // fill the selections array
+                this.setState({'selectedFoodItems': selections});
+            }
+            console.log(this.state.selectedFoodItems, 'selectedFoodItems', value, 'value');
         }
 
 
@@ -316,7 +310,7 @@ class UserInput extends Component {
                 calTotal = calTotal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
                 calWeek = calWeek + selections[i].props['data-calories'];
-                // call chartData for todays food items
+                // call chartData for todays food item
                 day = selections[i].props['data-day'];
                 itemsDate = true;
                 this.chartData(day, calToday, itemsDate);
@@ -384,11 +378,7 @@ class UserInput extends Component {
                     <h3>{this.state.foodItems? 'Please Select From The List' : ''}</h3>
                     <hr/>
                     <p className="err-msg">{this.state.err}</p>
-                    <div className="search-results">
-                        <ul>
-                            {this.state.foodItems}
-                        </ul>
-                    </div>
+                    <SearchResults results= {this.state.foodItems}/>
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
@@ -415,7 +405,7 @@ class UserInput extends Component {
                     <TotalCalories calories = {this.state.calories}/>
                     <hr/>
                     <p className="err-msg">{this.state.reportErr}</p>
-                    <ReportLog list = {selections}/>
+                    <ReportLog list= {selections}/>
                 </section>
             </div>
         );
