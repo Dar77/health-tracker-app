@@ -1,3 +1,103 @@
+
+___
+
+# Health Tracker Project
+## Single Page Application
+
+Project to create an app to track a users food and calorie intake. The Health Tracker App should allow a user to enter the food they have eaten and produce a log of consumed food and information on calorie intake for that day, week etc. Some of the information should also be presented visually as a chart. The app should be built using **React** and because the users data needs to be stored over an extended period, the app needs to make use of the **local Storage API**.
+
+___
+
+Visit: [Health Tracker App](http://www.it48.xyz/health-tracker)
+
+![Health Tracker App](src/images/health-tracker.jpg)
+___
+
+
+## Project Specification
+
+#### Interface design
+
+- Fully responsive
+- All application components usable across modern mobile, tablet and desktop browsers.
+
+#### App Functionality
+
+- The app should feature an input for the user to enter the food they have eaten.
+- This should return a list of matching food items which can be selected.
+- The selected food should be added to a food log that lists all selected food items.
+- Items added today can be deleted from the food log.
+- Calorie counters should keep track of todays, this weeks and total calories consumed.
+- This data should be used to fill a chart for this weeks calorie intake as it is selected.
+- The users data should persist when the browser is refreshed or closed.
+
+#### App Architecture
+
+- The app is built using **React** and the **Create React App**.
+- Avoid updating the **DOM** manually with **jQuery** or **javascript**, instead use **React** **state** and **props** to control the **View**.
+
+#### Asynchronous Data Usage
+
+- All data requests are retrieved in an asynchronous manner
+- Application uses the **Nutritionix API** for food and calorie data.
+- Data requested using the **Fetch API** and making use of **javascript Promises**.
+- Data requests that fail are handled gracefully using common fall back techniques
+- Users should be informed with a message when something doesn't load.
+
+___
+
+
+## Installation
+
+To run the project please **fork** a copy to your **Git Hub** account and **clone** to your local machine with **Git**.
+The project has been built using **create react app** as a starting point.
+
+- Change to the project's root directory:
+```bash
+   cd /example/path/to/project-directory
+```
+- You will need to have **Node.js** installed on your system to run the project. Install the projects dependencies (these are listed in the package.json file) by running:
+```bash
+   npm install
+```
+- When properly installed the development version of the app can be run with:
+```bash
+   npm start
+```
+- The production version can be created with
+```bash
+   npm build
+```
+#### Notes:
+
+See the [Readme for Create React App] section for extensive information.
+___
+
+
+## API's Used in Project
+
+- **Nutritionix API** for all food and calorie data.
+- **Fetch API** for data requests.
+- **Moment.js API** for dates.
+- **Local Storage API** for data storage.
+
+## References Used in Project
+
+- **React** getting started docs - [https://reactjs.org/docs/hello-world.html](https://reactjs.org/docs/hello-world.html)
+- Using **react google charts** - [https://github.com/rakannimer/react-google-charts](https://github.com/rakannimer/react-google-charts)
+- **Moment.js** docs - [https://momentjs.com/guides/](https://momentjs.com/guides/)
+- How to use **Fetch API** - [https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- Hiding scrollbar for the lists - [https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari](https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari)
+- Using **local storage API** with **React** - [https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2](https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2)
+- How to **setState** on the chart data without mutating state[https://stackoverflow.com/questions/35174489/reactjs-setstate-of-object-key-in-array?noredirect=1&lq=1](https://stackoverflow.com/questions/35174489/reactjs-setstate-of-object-key-in-array?noredirect=1&lq=1)
+- How to Create full screen background video - [http://thenewcode.com/777/Create-Fullscreen-HTML5-Page-Background-Video](http://thenewcode.com/777/Create-Fullscreen-HTML5-Page-Background-Video)
+
+___
+___
+
+
+**Readme for Create React App**
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
@@ -300,7 +400,7 @@ In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and s
 
 Start your app by running `npm start`, then press `^D` on macOS or `F9` on Windows and Linux or click the green debug icon to start debugging in WebStorm.
 
-The same way you can debug your application in IntelliJ IDEA Ultimate, PhpStorm, PyCharm Pro, and RubyMine. 
+The same way you can debug your application in IntelliJ IDEA Ultimate, PhpStorm, PyCharm Pro, and RubyMine.
 
 ## Formatting Code Automatically
 
@@ -1675,7 +1775,7 @@ Use the following [`launch.json`](https://code.visualstudio.com/docs/editor/debu
       "name": "Debug CRA Tests",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",      
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "args": [
         "test",
         "--runInBand",
@@ -1989,7 +2089,7 @@ If you’re using [Apache HTTP Server](https://httpd.apache.org/), you need to c
     RewriteRule ^ index.html [QSA,L]
 ```
 
-It will get copied to the `build` folder when you run `npm run build`. 
+It will get copied to the `build` folder when you run `npm run build`.
 
 If you’re using [Apache Tomcat](http://tomcat.apache.org/), you need to follow [this Stack Overflow answer](https://stackoverflow.com/a/41249464/4878474).
 
@@ -2429,7 +2529,7 @@ To resolve this:
 1. Open an issue on the dependency's issue tracker and ask that the package be published pre-compiled.
   * Note: Create React App can consume both CommonJS and ES modules. For Node.js compatibility, it is recommended that the main entry point is CommonJS. However, they can optionally provide an ES module entry point with the `module` field in `package.json`. Note that **even if a library provides an ES Modules version, it should still precompile other ES6 features to ES5 if it intends to support older browsers**.
 
-2. Fork the package and publish a corrected version yourself. 
+2. Fork the package and publish a corrected version yourself.
 
 3. If the dependency is small enough, copy it to your `src/` folder and treat it as application code.
 
