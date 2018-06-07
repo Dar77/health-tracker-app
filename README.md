@@ -70,7 +70,7 @@ The project has been built using **create react app** as a starting point.
 ```
 #### Notes:
 
-See the [Readme for Create React App] section for extensive information.
+[See the Readme for Create React App section for extensive information](#readme-for-create-react-app)
 ___
 
 
@@ -96,7 +96,7 @@ ___
 ___
 
 
-**Readme for Create React App**
+##Readme for Create React App##
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
