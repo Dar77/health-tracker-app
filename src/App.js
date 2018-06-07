@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-//import video from './my-great-background-video.video-file'; TODO ===============================
-import UserInput from './UserInput'; // import UserInput component
+import UserInput from './UserInput';
+import Video from './Video';
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +13,10 @@ class App extends Component {
 
   render() {
     return (
+      <div>
+        <Video/>
         <UserInput/>
+      </div>
     );
   }
 }

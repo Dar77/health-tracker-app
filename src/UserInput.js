@@ -89,7 +89,7 @@ class UserInput extends Component {
 
             value = JSON.parse(value);
             const returnedItems = value;
-            for (let item in returnedItems) { // construct jsx list items
+            for (let item in returnedItems) { // construct jsx list items from local storage data
                 const selectedName = returnedItems[item].props.children[4];
                 const selectedBrand = returnedItems[item].props.children[7];
                 const selectedCalories = returnedItems[item].props['data-calories']; // round the calories value to the nearest whole number
@@ -181,11 +181,11 @@ class UserInput extends Component {
                 this.setState({err: ''}) // empty any error messages
                 console.log('Request succeeded with JSON response', response);
                 let foodList = response.hits;
-                let ln = foodList.length;
+                const l = foodList.length;
                 const results = []; // temp array for search results
                 const resultsObj = []; // temp array for creating objects from search results
 
-                for (let i = 0; i < ln; i++) { // loop through the response and create the list items
+                for (let i= 0; i < l; i++) { // loop through the response and create the list items
                     const name = foodList[i].fields.item_name;
                     const brand = foodList[i].fields.brand_name;
                     const calories = foodList[i].fields.nf_calories;
@@ -206,7 +206,6 @@ class UserInput extends Component {
                 this.setState({foodItemsObj: resultsObj})
             })
             .catch(error => {
-                console.log('request failed', error);
                 this.setState({foodItems: []}) // empty any search results
                 this.setState({err: this.state.enteredFood === '' ? 'You Need to Enter a Food Type!' : 'Failed To Get Nutritionix Resources'})
             });
@@ -251,20 +250,22 @@ class UserInput extends Component {
 
     chartData = (day, calories, itemsDate) => { // update chart data
 
-        // check whether its Monday, if so clear the old weeks data first
-        if (itemsDate === true && day === 'Monday') {
-            this.dataUpdate(2, ['Tues', 0]);
-            this.dataUpdate(3, ['Weds', 0]);
-            this.dataUpdate(4, ['Thurs', 0]);
-            this.dataUpdate(5, ['Fri', 0]);
-            this.dataUpdate(6, ['Sat', 0]);
-            this.dataUpdate(7, ['Sun', 0]);
-        }
-
         switch (day) {
 
             case 'Monday':
-                this.dataUpdate(1, ['Mon', calories]);
+                // if its Monday clear the weeks data
+                let data = this.state.data.slice();
+                data = [
+                    ['Day', 'Calories'],
+                    ['Mon', calories],
+                    ['Tues', 0],
+                    ['Weds', 0],
+                    ['Thurs', 0],
+                    ['Fri', 0],
+                    ['Sat', 0],
+                    ['Sun', 0]
+                ];
+                this.setState({ data });
                 break;
 
             case 'Tuesday':
@@ -304,13 +305,13 @@ class UserInput extends Component {
         let calWeek = 0;
         let day = '';
         let itemsDate = false;
-        for (let i = 0; i < l; i++) {
+        for (let i= 0; i < l; i++) {
             console.log(moment(selections[i].props['data-default']).isSame(now, 'week'), 'if', now, 'now', selections[i].props['data-default'], 'data-default')
             if (now === selections[i].props['data-default']) { // if its today
                 calTotal = calTotal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
                 calWeek = calWeek + selections[i].props['data-calories'];
-                // call chartData for todays food item
+                // call chartData for todays food items
                 day = selections[i].props['data-day'];
                 itemsDate = true;
                 this.chartData(day, calToday, itemsDate);
@@ -400,7 +401,7 @@ class UserInput extends Component {
                     <Logo/>
                 </section>
                 <section className="item-d">
-                    <h2>Food Log: <span>{this.state.log === 1? `${this.state.log} item` : `${this.state.log} items`}</span></h2>
+                    <h2>Food Log: <span className= "log">{this.state.log === 1? `${this.state.log} item` : `${this.state.log} items`}</span></h2>
                     <hr/>
                     <TotalCalories calories = {this.state.calories}/>
                     <hr/>

@@ -11,7 +11,7 @@ class Logo extends Component {
     render() {
 
         return (
-            <img src={this.state.nutritionixLogo} alt={this.state.nutritionixLogoAlt}/>
+            <img className="nutri-logo" src={this.state.nutritionixLogo} alt={this.state.nutritionixLogoAlt}/>
         );
     }
 }

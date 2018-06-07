@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import webm from './media/video/avo-egg.webm';
 import mp4 from './media/video/avo-egg.mp4';
 
