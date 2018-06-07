@@ -131,12 +131,18 @@ li[data-descr]:hover::after {
   margin: 0 auto;
   overflow: auto;
   height: 350px;
+  -ms-overflow-style: none; /* hide scrollbars in IE 10+ - ref #1.*/
 }
 
 .report-results {
   margin: 0 auto;
   overflow: auto;
   height: 480px;
+  -ms-overflow-style: none; /* hide scrollbars in IE 10+ - ref #1.*/
+}
+
+::-webkit-scrollbar {
+  display: none; /* hide scrollbars in webkit-based browsers - ref #1.*/
 }
 
 .report-item {
