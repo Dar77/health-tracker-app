@@ -24,8 +24,8 @@ ___
 #### App Functionality
 
 - The app should feature an input for the user to enter the food they have eaten.
-- This should return a list of matching food items which can be selected.
-- The selected food should be added to a food log that lists all selected food items.
+- This should return a list of matching food items that can be selected.
+- The selected food should be added to a food log that lists all of the selected food items.
 - Items added today can be deleted from the food log.
 - Calorie counters should keep track of todays, this weeks and total calories consumed.
 - This data should be used to fill a chart for this weeks calorie intake as it is selected.
