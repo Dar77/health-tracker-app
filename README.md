@@ -70,7 +70,8 @@ The project has been built using **create react app** as a starting point.
 ```
 #### Notes:
 
-[See the Readme for Create React App section for extensive information](#readme-for-create-react-app)
+See the Readme for Create React App section for extensive information:
+[Readme for Create React App](#readme-for-create-react-app)
 ___
 
 
