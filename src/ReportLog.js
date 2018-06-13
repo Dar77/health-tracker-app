@@ -8,7 +8,7 @@ const ReportLog = ({list}) => {
 			    {list}
 			</ul>
 		</div>
-	)
+	);
 }
 
 export default ReportLog;

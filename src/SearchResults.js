@@ -8,7 +8,7 @@ const SearchResults = ({results}) => {
 	            {results}
 	        </ul>
 	    </div>
-	)
+	);
 }
 
 export default SearchResults;
