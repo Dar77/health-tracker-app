@@ -6,17 +6,17 @@ body {
 }
 
 h1 {
-  font: 2em/1.5em 'Gugi', cursive;
+  font: 2em/1.5em "Gugi", cursive;
   color: white;
   margin-top: 5%;
 }
 
 h2 {
-  font: 1.3em/1.5em 'Gugi', cursive;
+  font: 1.3em/1.5em "Gugi", cursive;
 }
 
 h3 {
-  font: 1.1em/1.5em 'Gugi', cursive;
+  font: 1.1em/1.5em "Gugi", cursive;
 }
 
 ul {
@@ -48,7 +48,7 @@ input[type=text] {
   border: 1px solid #6ab316;
   border-radius: 4px;
   background-color: #ddf2e3;
-  font: 1em/1.5em 'Gugi', cursive;
+  font: 1em/1.5em "Gugi", cursive;
   color: black;
   padding: 5px;
   width: 93%;
@@ -71,7 +71,7 @@ li[data-descr]:hover::after {
   z-index: 100;
   padding: .7rem;
   color: #813d3d;
-  font: 1em/1.5em 'Gugi', cursive;
+  font: 1em/1.5em "Gugi", cursive;
 }
 /* tool tip styles end */
 
@@ -102,7 +102,7 @@ li[data-descr]:hover::after {
     "sidebar"
     "report"
     "food-log";
-  justify-items: center; /* Aligns the content inside a grid item along the row axis */
+  justify-items: center;  /*Aligns the content inside a grid item along the row axis. not fully supported!*/
 }
 /* end - css grid styles */
 
@@ -258,7 +258,7 @@ li[data-descr]:hover::after {
   }
 
   h1 {
-    font: 2.5em/1.5em 'Gugi', cursive;
+    font: 2.5em/1.5em "Gugi", cursive;
   }
 
   section {
