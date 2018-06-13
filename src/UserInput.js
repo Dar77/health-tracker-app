@@ -100,12 +100,11 @@ class UserInput extends Component {
                 const selectionDay = returnedItems[item].props['data-day']; // format - 'Saturday'
                 // create a unique key for each list item
                 const key = returnedItems[item].key;
-
+                // create the list item
                 const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
                 selections.push(output); // fill the selections array
                 this.setState({'selectedFoodItems': selections});
             }
-            console.log(this.state.selectedFoodItems, 'selectedFoodItems', value, 'value');
         }
 
 
@@ -120,7 +119,6 @@ class UserInput extends Component {
                 try {
                     value = JSON.parse(value);
                     this.setState({ [key]: value });
-                    console.log(key, 'this is the key', value, 'this is the value');
                 } catch (e) {
                     // handle empty string
                     this.setState({ [key]: value });
@@ -146,7 +144,7 @@ class UserInput extends Component {
         this.setState({ enteredFood: event.target.value });
     }
 
-    onSubmit = (event) => {
+    onSubmit = (event) => { // submit the entered value
 
         event.preventDefault();
 
@@ -179,7 +177,6 @@ class UserInput extends Component {
             .then(response => response.json())
             .then (response => {
                 this.setState({err: ''}) // empty any error messages
-                console.log('Request succeeded with JSON response', response);
                 let foodList = response.hits;
                 const l = foodList.length;
                 const results = []; // temp array for search results
@@ -201,7 +198,7 @@ class UserInput extends Component {
                             serving: serving
                         });
                 }
-                // set the react prop arrays to equal the temp arrays created in loop
+                // set the react arrays to equal the temp arrays created in loop
                 this.setState({foodItems: results})
                 this.setState({foodItemsObj: resultsObj})
             })
@@ -217,6 +214,7 @@ class UserInput extends Component {
 
         const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
         const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
+        // set the objects values
         const selectedName = foodSelection.name;
         const selectedBrand = foodSelection.brand;
         const selectedCalories = Math.round(foodSelection.calories); // round the calories value to the nearest whole number
@@ -227,15 +225,13 @@ class UserInput extends Component {
         const selectionDay = moment().format('dddd'); // format - 'Saturday'
         // create a unique key for each list item
         const key = Math.random() * (100 - 10) + 10;
-
+        // create the list item
         const output = <li onClick={this.removeItem} className="report-item" data-calories={selectedCalories} data-default={dateDefault} data-date={selectionDate} data-day={selectionDay} data-id={key.toString()} key={key} data-descr="Delete Item?">Added on: {selectionDate}<br/>Name: {selectedName}<br/>Brand: {selectedBrand}<br/>Calories: {selectedCalories}<br/>Serving Size: {selectedServing}<br/></li>;
 
         selections.unshift(output); // instead of pushing to array, add to start of array using .unshift()
         this.setState({selectedFoodItems: selections});
         this.setState({log: selections.length});
-        this.calorieCounter(); // call calorieCounter method
-
-        console.log(selectedKey, 'selectedKey value', foodSelection, 'foodSelection value', selections, 'selections');
+        this.calorieCounter();
     }
 
 
@@ -311,7 +307,6 @@ class UserInput extends Component {
         let day = '';
         let itemsDate = false;
         for (let i= 0; i < l; i++) {
-            console.log(moment(selections[i].props['data-default']).isSame(now, 'week'), 'if', now, 'now', selections[i].props['data-default'], 'data-default')
             if (now === selections[i].props['data-default']) { // if its today
                 calTotal = calTotal + selections[i].props['data-calories'];
                 calToday = calToday + selections[i].props['data-calories'];
@@ -320,7 +315,6 @@ class UserInput extends Component {
                 day = selections[i].props['data-day'];
                 itemsDate = true;
                 this.chartData(day, calToday, itemsDate);
-                console.log(day, 'day in calorie counter', calToday, 'calToday in calorie counter', this.state.data[7], 'this.state.data');
             } else if (now !== selections[i].props['data-default'] && moment(selections[i].props['data-default']).isSame(now, 'week')) { // if its this week but not today
                 calWeek = calWeek + selections[i].props['data-calories'];
                 calTotal = calTotal + selections[i].props['data-calories'];
@@ -359,7 +353,6 @@ class UserInput extends Component {
             } else if (sel === deleteItem && moment().calendar() === 'Today' && now !== selections[i].props['data-default']) {
                 this.setState({reportErr: 'Sorry you can only remove items added today!'});
             }
-            console.log(deleteItem, 'this is deleteItem', event.target, 'this is the target', l, 'this is l', sel, 'this is sel');
         }
         selections= []; // clear the old version of selections
         selections = [...adjusted]; // fill with the contents of adjusted
