@@ -6,4 +6,3 @@ import { unregister } from './registerServiceWorker'; // disable service workers
 unregister();
 
 ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
