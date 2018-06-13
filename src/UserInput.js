@@ -248,24 +248,29 @@ class UserInput extends Component {
         this.setState({ data });
     }
 
+    // helper function to clear chart data at the start of a new week
+    clearChart = (calories) => {
+        let data = this.state.data.slice();
+        data = [
+            ['Day', 'Calories'],
+            ['Mon', calories],
+            ['Tues', 0],
+            ['Weds', 0],
+            ['Thurs', 0],
+            ['Fri', 0],
+            ['Sat', 0],
+            ['Sun', 0]
+        ];
+        this.setState({ data });
+    }
+
     chartData = (day, calories, itemsDate) => { // update chart data
 
         switch (day) {
 
             case 'Monday':
                 // if its Monday clear the weeks data
-                let data = this.state.data.slice();
-                data = [
-                    ['Day', 'Calories'],
-                    ['Mon', calories],
-                    ['Tues', 0],
-                    ['Weds', 0],
-                    ['Thurs', 0],
-                    ['Fri', 0],
-                    ['Sat', 0],
-                    ['Sun', 0]
-                ];
-                this.setState({ data });
+                this.clearChart(calories);
                 break;
 
             case 'Tuesday':
