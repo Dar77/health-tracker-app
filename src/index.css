@@ -1,5 +1,14 @@
 /* index.css */
 
+/* loader styles */
+@keyframes pulse {
+  0% { background: #f0f6f2; border: 1px solid #e5e9e7; }
+  25% { background: #f0f6f2; border: 1px solid #f4f8f5; }
+  50% { background: white; }
+  75% { background: #f0f6f2; border: 1px solid #f4f8f5; }
+  100% { background: #f0f6f2; border: 1px solid #e5e9e7; }
+}
+
 body {
   font: 14px/1.5em "Lato", sans-serif;
   background: url(images/avo-egg.jpg) #000 no-repeat center center fixed;
@@ -165,6 +174,16 @@ li[data-descr]:hover::after {
 
 .log {
   font-size: 0.8em;
+}
+
+/* loader styles */
+.load-box {
+  margin: 10px;
+  padding: 7px;
+  border-radius: 5px;
+  height: 50px;
+  display: block;
+  animation: pulse 3s infinite alternate;
 }
 
 @media only screen and (min-width: 500px) {

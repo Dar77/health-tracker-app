@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Logo from './Logo';
+import Loader from './Loader';
 import SearchResults from './SearchResults';
 import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
@@ -35,6 +36,7 @@ class UserInput extends Component {
             caloriesToday: 0,
             caloriesWeek: 0,
             log: 0,
+            loading: false, // loading animation
             // react-google-charts setup below
             options: {
                 title: 'This Weeks Overview',
@@ -147,6 +149,7 @@ class UserInput extends Component {
     onSubmit = (event) => { // submit the entered value
 
         event.preventDefault();
+        this.setState({loading: true}); // switch on loading animation
 
         const appId = 'd4fdeca5';
         const appKey = 'b5cc447ce282c158b3ae1e80e148842d';
@@ -198,13 +201,17 @@ class UserInput extends Component {
                             serving: serving
                         });
                 }
+                // turn off loading animation
+                this.setState({loading: false});
                 // set the react arrays to equal the temp arrays created in loop
-                this.setState({foodItems: results})
-                this.setState({foodItemsObj: resultsObj})
+                this.setState({foodItems: results});
+                this.setState({foodItemsObj: resultsObj});
             })
             .catch(error => {
-                this.setState({foodItems: []}) // empty any search results
-                this.setState({err: this.state.enteredFood === '' ? 'You Need to Enter a Food Type!' : 'Failed To Get Nutritionix Resources'})
+                // turn off loading animation
+                this.setState({loading: false});
+                this.setState({foodItems: []}); // empty any search results
+                this.setState({err: this.state.enteredFood === '' ? 'You Need to Enter a Food Type!' : 'Failed To Get Nutritionix Resources'});
             });
     }
 
@@ -377,7 +384,7 @@ class UserInput extends Component {
                     <h3>{this.state.foodItems? 'Please Select From The List' : ''}</h3>
                     <hr/>
                     <p className="err-msg">{this.state.err}</p>
-                    <SearchResults results= {this.state.foodItems}/>
+                    {this.state.loading ? <Loader/> : <SearchResults results= {this.state.foodItems}/>}
                 </section>
                 <section className="item-c">
                     <h2>Your Report</h2>
