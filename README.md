@@ -10,7 +10,7 @@ ___
 
 Visit: [Health Tracker App](http://www.it48.xyz/health-tracker)
 
-![Health Tracker App](src/images/health-tracker.jpg)
+![Health Tracker App](src/images/health-tracker-detail.jpg)
 ___
 
 
