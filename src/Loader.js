@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loader = () => {
+const Loader = () => { // loading animation
 
     return (
 		<div>

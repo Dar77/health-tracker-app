@@ -183,7 +183,7 @@ li[data-descr]:hover::after {
   border-radius: 5px;
   height: 50px;
   display: block;
-  animation: pulse 3s infinite alternate;
+  animation: pulse 2.5s infinite alternate;
 }
 
 @media only screen and (min-width: 500px) {
