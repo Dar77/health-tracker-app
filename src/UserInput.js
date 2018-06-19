@@ -18,7 +18,7 @@ moment.locale('en', {
         dow: 1, // start 1st day of week on Monday instead of the Sunday default
     },
 });
-let now = moment().format("YYYY MM DD"); // current date
+let now = moment().format('YYYY MM DD'); // current date
 
 let selections = []; // an array to store user selected food items
 
@@ -251,12 +251,12 @@ class UserInput extends Component {
         this.setState({ data });
     }
 
-    // helper function to clear chart data at the start of a new week
-    clearChart = (calories) => {
+    // helper function to clear chart data when its a new week
+    clearChart = (key, arrayItem) => {
         let data = this.state.data.slice();
         data = [
             ['Day', 'Calories'],
-            ['Mon', calories],
+            ['Mon', 0],
             ['Tues', 0],
             ['Weds', 0],
             ['Thurs', 0],
@@ -264,40 +264,74 @@ class UserInput extends Component {
             ['Sat', 0],
             ['Sun', 0]
         ];
+        data[key] = arrayItem;
         this.setState({ data });
+        console.log('cleared chart data');
     }
 
     chartData = (day, calories, itemsDate) => { // update chart data
 
+        // check when the last selected item was added, was it this week?
+        const lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
+        console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
+
         switch (day) {
 
             case 'Monday':
-                // if its Monday clear the weeks data
-                this.clearChart(calories);
+                // if the last selected item was added in another week, clear the chart and add new data
+                if (lastItem === false) {
+                    this.clearChart(1, ['Mon', calories]);
+                } else {
+                    this.dataUpdate(1, ['Mon', calories]);
+                }
                 break;
 
             case 'Tuesday':
-                this.dataUpdate(2, ['Tues', calories]);
+                if (lastItem === false) {
+                    this.clearChart(2, ['Tues', calories]);
+                } else {
+                    this.dataUpdate(2, ['Tues', calories]);
+                }
                 break;
 
             case 'Wednesday':
-                this.dataUpdate(3, ['Weds', calories]);
+                if (lastItem === false) {
+                    this.clearChart(3, ['Weds', calories]);
+                } else {
+                    this.dataUpdate(3, ['Weds', calories]);
+                }
                 break;
 
             case 'Thursday':
-                this.dataUpdate(4, ['Thurs', calories]);
+                if (lastItem === false) {
+                    this.clearChart(4, ['Thurs', calories]);
+                } else {
+                    this.dataUpdate(4, ['Thurs', calories]);
+                }
                 break;
 
             case 'Friday':
-                this.dataUpdate(5, ['Fri', calories]);
+                if (lastItem === false) {
+                    this.clearChart(5, ['Fri', calories]);
+                } else {
+                    this.dataUpdate(5, ['Fri', calories]);
+                }
                 break;
 
             case 'Saturday':
-                this.dataUpdate(6, ['Sat', calories]);
+                if (lastItem === false) {
+                    this.clearChart(6, ['Sat', calories]);
+                } else {
+                    this.dataUpdate(6, ['Sat', calories]);
+                }
                 break;
 
             case 'Sunday':
-                this.dataUpdate(7, ['Sun', calories]);
+                if (lastItem === false) {
+                    this.clearChart(7, ['Sun', calories]);
+                } else {
+                    this.dataUpdate(7, ['Sun', calories]);
+                }
                 break;
 
             default:
@@ -312,7 +346,7 @@ class UserInput extends Component {
         let calToday = 0;
         let calWeek = 0;
         let day = '';
-        let itemsDate = false;
+        let itemsDate = '';
         for (let i= 0; i < l; i++) {
             if (now === selections[i].props['data-default']) { // if its today
                 calTotal = calTotal + selections[i].props['data-calories'];
@@ -320,7 +354,7 @@ class UserInput extends Component {
                 calWeek = calWeek + selections[i].props['data-calories'];
                 // call chartData for todays food items
                 day = selections[i].props['data-day'];
-                itemsDate = true;
+                itemsDate = selections[i].props['data-default'];
                 this.chartData(day, calToday, itemsDate);
             } else if (now !== selections[i].props['data-default'] && moment(selections[i].props['data-default']).isSame(now, 'week')) { // if its this week but not today
                 calWeek = calWeek + selections[i].props['data-calories'];
