@@ -21,6 +21,7 @@ moment.locale('en', {
 let now = moment().format('YYYY MM DD'); // current date
 
 let selections = []; // an array to store user selected food items
+let archive = []; // an array for stored chart data (weeks)
 
 class UserInput extends Component {
 
@@ -37,6 +38,7 @@ class UserInput extends Component {
             caloriesWeek: 0,
             log: 0,
             loading: false, // loading animation
+            archiveData: [],
             // react-google-charts setup below
             options: {
                 title: 'This Weeks Overview',
@@ -241,6 +243,18 @@ class UserInput extends Component {
         this.calorieCounter();
     }
 
+    // archive chart data for previous weeks
+    archive = (date) => {
+        // find the start of the week form the date being passed in
+        const startOfWeek = moment(date).startOf('week').format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
+        const archiveObj = {
+            data: this.state.data,
+            date: startOfWeek
+        };
+        archive.push(archiveObj);
+        this.setState({archiveData: archive});
+        console.log(archive, 'archive', this.state.archiveData, 'this.state.archiveData');
+    }
 
     // helper function to setState on the chart data without mutating state
     // ref - stackoverflow: https://stackoverflow.com/questions/35174489/reactjs-setstate-of-object-key-in-array?noredirect=1&lq=1
@@ -274,6 +288,9 @@ class UserInput extends Component {
         // check when the last selected item was added, was it this week?
         const lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
         console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
+        if (lastItem === false) {
+            this.archive(selections[1].props['data-default']); // archive the chart data for previous week
+        }
 
         switch (day) {
 
