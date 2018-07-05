@@ -5,6 +5,7 @@ import SearchResults from './SearchResults';
 import TodaysCalories from './TodaysCalories';
 import WeeksCalories from './WeeksCalories';
 import TotalCalories from './TotalCalories';
+import ArchiveChart from './ArchiveChart';
 import { Chart } from './react-google-charts';
 import ReportLog from './ReportLog';
 
@@ -21,7 +22,8 @@ moment.locale('en', {
 let now = moment().format('YYYY MM DD'); // current date
 
 let selections = []; // an array to store user selected food items
-let archive = []; // an array for stored chart data (weeks)
+let archiveArray = []; // an array for stored chart data (weeks)
+let viewArchive = false;
 
 class UserInput extends Component {
 
@@ -63,6 +65,7 @@ class UserInput extends Component {
     // local storage with react - ref: https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
     componentDidMount() {
         //localStorage.clear(); //REMOVE - development only
+        //localStorage.removeItem('archiveData');
         this.hydrateStateWithLocalStorage();
 
         // add event listener to save state to localStorage
@@ -244,16 +247,28 @@ class UserInput extends Component {
     }
 
     // archive chart data for previous weeks
-    archive = (date) => {
-        // find the start of the week form the date being passed in
-        const startOfWeek = moment(date).startOf('week').format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
-        const archiveObj = {
-            data: this.state.data,
-            date: startOfWeek
-        };
-        archive.push(archiveObj);
-        this.setState({archiveData: archive});
-        console.log(archive, 'archive', this.state.archiveData, 'this.state.archiveData');
+    archive = (archiveDate) => {
+        // find the start of the week from the date being passed in
+        let startOfWeek = moment(archiveDate).startOf('week').format('dddd Do MMMM YYYY'); // format - 'Saturday 5th May 2018'
+
+        // check that it hasn't already been added (such as when all of todays items are deleted) before adding
+        if (this.state.archiveData[1] === undefined || this.state.archiveData[1].date !== startOfWeek) {
+            const archiveObj = {
+                data: this.state.data,
+                date: startOfWeek
+            };
+            archiveArray.unshift(archiveObj);
+            this.setState({archiveData: archiveArray});
+            console.log('archived');
+        } else {
+            console.log('not archived');
+        }
+
+        console.log(startOfWeek, 'startOfWeek', archiveArray, 'archiveArray', this.state.archiveData, 'this.state.archiveData');
+    }
+
+    archiveViewer = () => {
+        viewArchive = true;
     }
 
     // helper function to setState on the chart data without mutating state
@@ -280,7 +295,7 @@ class UserInput extends Component {
         ];
         data[key] = arrayItem;
         this.setState({ data });
-        console.log('cleared chart data');
+        console.log('cleared chart data, new week');
     }
 
     chartData = (day, calories, itemsDate) => { // update chart data
@@ -288,7 +303,8 @@ class UserInput extends Component {
         // check when the last selected item was added, was it this week?
         const lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
         console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
-        if (lastItem === false) {
+
+        if (lastItem === false && itemsDate !== undefined) { // note: itemsDate will be undefined when called by removeItem()
             this.archive(selections[1].props['data-default']); // archive the chart data for previous week
         }
 
@@ -453,6 +469,7 @@ class UserInput extends Component {
                             height="400px"
                             legend_toggle
                         />
+                        {this.state.archiveData? <button onClick={this.archiveViewer}>Previous Weeks Chart</button> : ''}
                     </div>
                     <Logo/>
                 </section>
