@@ -50,6 +50,20 @@ section {
 
 button {
   cursor: pointer;
+  border: 1px solid #6ab316;
+  border-radius: 4px;
+  background-color: #ddf2e3;
+  font: 0.9em/1.5em "Gugi", cursive;
+  color: black;
+  padding: 4px;
+  margin: 5px;
+}
+
+button:hover {
+  background: #49ea8e;
+  transition: background .2s ease;
+  color: white;
+  transition: color .1s ease;
 }
 
 /* input styles */
@@ -63,7 +77,7 @@ input[type=text] {
   width: 93%;
 }
 
-/* tool tip styles start */
+/* list tool tip styles start */
 li[data-descr] {
   cursor: pointer;
   position: relative;
@@ -170,13 +184,63 @@ li[data-descr]:hover::after {
 
 .chart {
   width: 300px;
+  position: relative;
 }
 
 .log {
   font-size: 0.8em;
 }
 
-/* loader styles */
+/* archive navigation styles */
+.nav-left, .nav-right {
+  border: none;
+  color: #49ea8e;
+  border-radius: 90px;
+  padding: 3px;
+  position: absolute;
+  top: 20%;
+}
+
+.nav-left {
+  left: 0;
+}
+
+.nav-left[data-descr]:hover::after {
+  content: attr(data-descr);
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #fff;
+  width: 40px;
+  position: absolute;
+  left: 90%;
+  top: 33%;
+  z-index: 100;
+  padding: .5rem;
+  color: black;
+  font: 0.7em/1.5em "Gugi", cursive;
+}
+
+.nav-right {
+  right: 0;
+}
+
+.nav-right[data-descr]:hover::after {
+  content: attr(data-descr);
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #fff;
+  width: 40px;
+  position: absolute;
+  right: 90%;
+  top: 33%;
+  z-index: 100;
+  padding: .5rem;
+  color: black;
+  font: 0.7em/1.5em "Gugi", cursive;
+}
+/* end - archive navigation styles */
+
+/* loader styles for search results*/
 .load-box {
   margin: 10px;
   padding: 7px;
@@ -219,6 +283,7 @@ li[data-descr]:hover::after {
   }
 
   .video-background {
+    filter: grayscale(85%);
     display: block;
     position: fixed;
     top: 50%;
@@ -256,6 +321,10 @@ li[data-descr]:hover::after {
 
   .chart {
     width: 200px;
+  }
+
+  .nav-left, .nav-right {
+    padding: 6px;
   }
 
   /* css grid styles */
@@ -301,6 +370,11 @@ li[data-descr]:hover::after {
 
   .chart {
     width: 600px;
+  }
+
+  .nav-left, .nav-right {
+    top: 45%;
+    padding: 10px;
   }
 
   /* css grid styles */
