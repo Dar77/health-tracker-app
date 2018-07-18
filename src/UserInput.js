@@ -8,6 +8,13 @@ import TotalCalories from './TotalCalories';
 import ArchiveChart from './ArchiveChart';
 import { Chart } from './react-google-charts';
 import ReportLog from './ReportLog';
+import ErrorBoundary from './ErrorBoundary';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronCircleLeft, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
+
+// load font-awesome icons
+library.add(faChevronCircleLeft, faChevronCircleRight);
 
 // set up moment.js - ref: https://momentjs.com/docs/#/customization/calendar/
 const moment = require('moment');
@@ -23,7 +30,6 @@ let now = moment().format('YYYY MM DD'); // current date
 
 let selections = []; // an array to store user selected food items
 let archiveArray = []; // an array for stored chart data (weeks)
-let viewArchive = false;
 
 class UserInput extends Component {
 
@@ -41,6 +47,8 @@ class UserInput extends Component {
             log: 0,
             loading: false, // loading animation
             archiveData: [],
+            archiveKey: 0,
+            viewArchive: false,
             // react-google-charts setup below
             options: {
                 title: 'This Weeks Overview',
@@ -132,6 +140,22 @@ class UserInput extends Component {
                 }
             }
         }
+
+        // if archiveData exists in localStorage sync the archiveArray
+        if (localStorage.hasOwnProperty('archiveData')) {
+            // get the archiveData value from localStorage
+            let value = localStorage.getItem('archiveData');
+
+            value = JSON.parse(value);
+            const returnedItems = value;
+            // push the data to the archiveArray
+            for (let item in returnedItems) {
+                archiveArray.push(returnedItems[item]);
+            }
+        }
+        console.log(archiveArray, 'archiveArray after hydrate');
+
+
     }
 
     saveStateToLocalStorage() {
@@ -223,6 +247,7 @@ class UserInput extends Component {
     selected = (event) => { // the user selected search item
 
         this.setState({reportErr: ''}); // empty any error messages
+        this.setState({viewArchive: false}); // make sure the current chart is visible
 
         const selectedKey = event.target.getAttribute('id'); // find the id of the user selected item
         const foodSelection = this.state.foodItemsObj[selectedKey]; // get the corresponding item's object
@@ -255,7 +280,8 @@ class UserInput extends Component {
         if (this.state.archiveData[1] === undefined || this.state.archiveData[1].date !== startOfWeek) {
             const archiveObj = {
                 data: this.state.data,
-                date: startOfWeek
+                date: startOfWeek,
+                defaultDate: archiveDate
             };
             archiveArray.unshift(archiveObj);
             this.setState({archiveData: archiveArray});
@@ -267,8 +293,55 @@ class UserInput extends Component {
         console.log(startOfWeek, 'startOfWeek', archiveArray, 'archiveArray', this.state.archiveData, 'this.state.archiveData');
     }
 
+    // view archived charts
     archiveViewer = () => {
-        viewArchive = true;
+        console.log(this.state.archiveData,'archiveData', archiveArray, 'archiveArray');
+        this.setState({viewArchive: true});
+    }
+
+    // go back to the current weeks chart
+    archiveClose = () => {
+        this.setState({viewArchive: false});
+    }
+
+    testArchive = () => { // TODO - remove this, testing only
+
+        const archiveObj = {
+            data: [
+                  ['Day', 'Calories'],
+                  ['Mon', Math.floor(Math.random() * 10)],
+                  ['Tues', Math.floor(Math.random() * 10)],
+                  ['Weds', Math.floor(Math.random() * 10)],
+                  ['Thurs', Math.floor(Math.random() * 10)],
+                  ['Fri', Math.floor(Math.random() * 10)],
+                  ['Sat', Math.floor(Math.random() * 10)],
+                  ['Sun', Math.floor(Math.random() * 10)]
+            ],
+            date: 'Thursday 19th July 2018',
+            defaultDate: '2018-07-16'
+        };
+        archiveArray.unshift(archiveObj);
+        this.setState({archiveData: archiveArray});
+        console.log('archived', this.state.archiveData, 'this.state.archiveData', archiveArray, 'archiveArray');
+    }
+
+    // archive - previous chart
+    previous = () => {
+
+        const l = this.state.archiveData.length;
+        if (this.state.archiveKey < l - 1) {
+            this.setState({archiveKey: this.state.archiveKey + 1});
+        }
+        console.log(this.state.archiveKey, 'archiveKey', 'previous clicked!');
+    }
+
+    // archive - next chart
+    next = () => {
+
+        if (this.state.archiveKey > 0) {
+            this.setState({archiveKey: this.state.archiveKey - 1});
+        }
+        console.log(this.state.archiveKey, 'archiveKey', 'next clicked!');
     }
 
     // helper function to setState on the chart data without mutating state
@@ -300,9 +373,13 @@ class UserInput extends Component {
 
     chartData = (day, calories, itemsDate) => { // update chart data
 
-        // check when the last selected item was added, was it this week?
-        const lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
-        console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
+        let lastItem;
+
+        if (selections[1] !== undefined) { // check whether a previous selection exists
+            // check when the last selected item was added, was it this week?
+            lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
+            console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
+        }
 
         if (lastItem === false && itemsDate !== undefined) { // note: itemsDate will be undefined when called by removeItem()
             this.archive(selections[1].props['data-default']); // archive the chart data for previous week
@@ -444,7 +521,7 @@ class UserInput extends Component {
                 <section className="item-b">
                     <h2>Calorie Counter</h2>
                     <hr/>
-                    <h3>What Did You Eat?</h3>
+                    <h3>What Did You Eat or Drink?</h3>
                     <form onSubmit={this.onSubmit}>
                         <input value={this.state.enteredFood} onChange={this.onChange} placeholder="enter food type" type="text" aria-label="enter a food type"/>
                     </form>
@@ -454,23 +531,52 @@ class UserInput extends Component {
                     {this.state.loading ? <Loader/> : <SearchResults results= {this.state.foodItems}/>}
                 </section>
                 <section className="item-c">
-                    <h2>Your Report</h2>
+                    {this.state.viewArchive === true?
+                        <h2>Your Archived Reports</h2> :
+                        <h2>Your Report</h2>
+                    }
                     <hr/>
-                    <TodaysCalories calories = {this.state.caloriesToday}/>
-                    <WeeksCalories calories = {this.state.caloriesWeek}/>
-                    <hr/>
+                    {this.state.viewArchive === true?
+                        <div>
+                            <h3>Archived Calorie Charts</h3>
+                        </div> :
+                        <div>
+                            <TodaysCalories calories = {this.state.caloriesToday}/>
+                            <WeeksCalories calories = {this.state.caloriesWeek}/>
+                            <hr/>
+                        </div>
+                    }
                     <div className="chart">
-                        <Chart
-                            chartType="PieChart"
-                            data={this.state.data}
-                            options={this.state.options}
-                            graph_id="PieChart"
-                            width="100%"
-                            height="400px"
-                            legend_toggle
-                        />
-                        {this.state.archiveData? <button onClick={this.archiveViewer}>Previous Weeks Chart</button> : ''}
+                        <ErrorBoundary>
+                            {this.state.viewArchive === true?
+                                <ArchiveChart archiveData={archiveArray} archiveKey={this.state.archiveKey} chart={Chart}/> :
+                                <Chart
+                                    chartType="PieChart"
+                                    data={this.state.data}
+                                    options={this.state.options}
+                                    graph_id="PieChart"
+                                    width="100%"
+                                    height="400px"
+                                    legend_toggle
+                                />
+                            }
+                            {this.state.archiveData.length >= 2 && this.state.viewArchive === true?
+                                <div>
+                                <button onClick={this.previous} data-descr="Previous Chart" className="nav-left"><FontAwesomeIcon icon="chevron-circle-left" /></button>
+                                <button onClick={this.next} data-descr="Next Chart" className="nav-right"><FontAwesomeIcon icon="chevron-circle-right" /></button>
+                                </div>
+                                : ''
+                            }
+                        </ErrorBoundary>
                     </div>
+                    <button onClick={this.testArchive}>Test Archive</button>
+                    {this.state.archiveData.length === 0?
+                        '' :
+                        <div>
+                            <button onClick={this.archiveViewer}>Previous Weeks</button>
+                            <button onClick={this.archiveClose}>Current Week</button>
+                        </div>
+                    }
                     <Logo/>
                 </section>
                 <section className="item-d">
