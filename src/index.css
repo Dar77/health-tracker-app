@@ -11,7 +11,7 @@
 
 body {
   font: 14px/1.5em "Lato", sans-serif;
-  background: url(images/avo-egg.jpg) #000 no-repeat center center fixed;
+  background: #a0b9a6;
 }
 
 h1 {
@@ -131,6 +131,11 @@ li[data-descr]:hover::after {
 
 .video-background {
   display: none;
+}
+
+.nutri-logo {
+  display: block;
+  margin: 20px 0;
 }
 
 .err-msg {
@@ -256,6 +261,7 @@ li[data-descr]:hover::after {
     border-radius: 47px 20px 94px 20px;
     border: 1px solid #6ab316;
     min-height: 650px;
+    box-shadow: 10px 10px 43px -16px rgba(0,0,0,0.75);
   }
 
   /* css grid styles */
@@ -282,6 +288,20 @@ li[data-descr]:hover::after {
     display: block;
   }
 
+  .chart {
+    width: 420px;
+  }
+
+}
+
+@media only screen and (min-width: 1000px) {
+  /* styles applied above 1000px */
+  section {
+    width: 200px;
+    height: 700px;
+
+  }
+
   .video-background {
     filter: grayscale(85%);
     display: block;
@@ -299,24 +319,6 @@ li[data-descr]:hover::after {
     transform: translateX(-50%) translateY(-50%);
     background: url(images/avo-egg.jpg) no-repeat;
     background-size: cover;
-  }
-
-  .chart {
-    width: 420px;
-  }
-
-}
-
-@media only screen and (min-width: 1000px) {
-  /* styles applied above 1000px */
-  section {
-    width: 200px;
-    height: 700px;
-  }
-
-  .nutri-logo {
-    display: block;
-    margin: 20px;
   }
 
   .chart {
@@ -351,6 +353,10 @@ li[data-descr]:hover::after {
 
   section {
     width: 250px;
+  }
+
+  .nutri-logo {
+    margin: 30px 20px 20px 0;
   }
 
   .chart {
