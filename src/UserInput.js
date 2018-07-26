@@ -286,11 +286,13 @@ class UserInput extends Component {
 
     // view archived charts
     archiveViewer = () => {
+
         this.setState({viewArchive: true});
     }
 
     // go back to the current weeks chart
     archiveClose = () => {
+
         this.setState({viewArchive: false});
     }
 
