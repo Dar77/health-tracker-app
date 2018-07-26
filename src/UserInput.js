@@ -153,9 +153,6 @@ class UserInput extends Component {
                 archiveArray.push(returnedItems[item]);
             }
         }
-        console.log(archiveArray, 'archiveArray after hydrate');
-
-
     }
 
     saveStateToLocalStorage() {
@@ -285,17 +282,11 @@ class UserInput extends Component {
             };
             archiveArray.unshift(archiveObj);
             this.setState({archiveData: archiveArray});
-            console.log('archived');
-        } else {
-            console.log('not archived');
         }
-
-        console.log(startOfWeek, 'startOfWeek', archiveArray, 'archiveArray', this.state.archiveData, 'this.state.archiveData');
     }
 
     // view archived charts
     archiveViewer = () => {
-        console.log(this.state.archiveData,'archiveData', archiveArray, 'archiveArray');
         this.setState({viewArchive: true});
     }
 
@@ -303,7 +294,7 @@ class UserInput extends Component {
     archiveClose = () => {
         this.setState({viewArchive: false});
     }
-
+/*
     testArchive = () => { // TODO - remove this, testing only
 
         const archiveObj = {
@@ -324,7 +315,7 @@ class UserInput extends Component {
         this.setState({archiveData: archiveArray});
         console.log('archived', this.state.archiveData, 'this.state.archiveData', archiveArray, 'archiveArray');
     }
-
+*/
     // archive - previous chart
     previous = () => {
 
@@ -332,7 +323,6 @@ class UserInput extends Component {
         if (this.state.archiveKey < l - 1) {
             this.setState({archiveKey: this.state.archiveKey + 1});
         }
-        console.log(this.state.archiveKey, 'archiveKey', 'previous clicked!');
     }
 
     // archive - next chart
@@ -341,7 +331,6 @@ class UserInput extends Component {
         if (this.state.archiveKey > 0) {
             this.setState({archiveKey: this.state.archiveKey - 1});
         }
-        console.log(this.state.archiveKey, 'archiveKey', 'next clicked!');
     }
 
     // helper function to setState on the chart data without mutating state
@@ -368,7 +357,6 @@ class UserInput extends Component {
         ];
         data[key] = arrayItem;
         this.setState({ data });
-        console.log('cleared chart data, new week');
     }
 
     chartData = (day, calories, itemsDate) => { // update chart data
@@ -378,7 +366,6 @@ class UserInput extends Component {
         if (selections[1] !== undefined) { // check whether a previous selection exists
             // check when the last selected item was added, was it this week?
             lastItem = moment(selections[1].props['data-default']).isSame(itemsDate, 'week');
-            console.log(itemsDate, 'itemsDate', lastItem, 'lastItem', selections[1].props['data-default'], 'selections[1]');
         }
 
         if (lastItem === false && itemsDate !== undefined) { // note: itemsDate will be undefined when called by removeItem()
