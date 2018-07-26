@@ -4,16 +4,13 @@ const ArchiveChart = ({archiveData, archiveKey, chart}) => {
 
   let Chart = chart;
   let cal = 0;
-
-  this.state = {
-    options: {
-        title: `The Week Beginning:
-                ${archiveData[archiveKey] === undefined? 'No Data Available!' : archiveData[archiveKey].date}`,
-        pieSliceText: 'value',
-        pieSliceTextStyle: {color: 'black', fontSize: 14},
-        is3D: true,
-        colors:['#49eadb','#49c0ea', '#5f49ea', '#b049ea', '#49ea8e','#c5ea49','#ea9849']
-    }
+  let options = {
+    title: `The Week Beginning:
+            ${archiveData[archiveKey] === undefined? 'No Data Available!' : archiveData[archiveKey].date}`,
+    pieSliceText: 'value',
+    pieSliceTextStyle: {color: 'black', fontSize: 14},
+    is3D: true,
+    colors:['#49eadb','#49c0ea', '#5f49ea', '#b049ea', '#49ea8e','#c5ea49','#ea9849']
   };
 
   // get the total calories for the archived week
@@ -32,7 +29,7 @@ const ArchiveChart = ({archiveData, archiveKey, chart}) => {
       <Chart
         chartType="PieChart"
         data= {archiveData[archiveKey] === undefined? '' : archiveData[archiveKey].data}
-        options={this.state.options}
+        options={options}
         width="100%"
         height="350px"
         legend_toggle
