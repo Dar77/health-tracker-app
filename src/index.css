@@ -299,7 +299,7 @@ li[data-descr]:hover::after {
   section {
     width: 200px;
     height: 700px;
-
+    box-shadow: none;
   }
 
   .video-background {
