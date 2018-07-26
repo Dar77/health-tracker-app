@@ -523,7 +523,7 @@ class UserInput extends Component {
                     <hr/>
                     <h3>What Did You Eat or Drink?</h3>
                     <form onSubmit={this.onSubmit}>
-                        <input value={this.state.enteredFood} onChange={this.onChange} placeholder="enter food type" type="text" aria-label="enter a food type"/>
+                        <input value={this.state.enteredFood} onChange={this.onChange} placeholder="enter type" type="text" aria-label="enter a food type"/>
                     </form>
                     <h3>{this.state.foodItems? 'Please Select From The List' : ''}</h3>
                     <hr/>
@@ -556,7 +556,7 @@ class UserInput extends Component {
                                     options={this.state.options}
                                     graph_id="PieChart"
                                     width="100%"
-                                    height="400px"
+                                    height="350px"
                                     legend_toggle
                                 />
                             }
@@ -569,7 +569,6 @@ class UserInput extends Component {
                             }
                         </ErrorBoundary>
                     </div>
-                    <button onClick={this.testArchive}>Test Archive</button>
                     {this.state.archiveData.length === 0?
                         '' :
                         <div>
@@ -577,6 +576,7 @@ class UserInput extends Component {
                             <button onClick={this.archiveClose}>Current Week</button>
                         </div>
                     }
+                    <hr/>
                     <Logo/>
                 </section>
                 <section className="item-d">
