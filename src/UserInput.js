@@ -72,8 +72,7 @@ class UserInput extends Component {
 
     // local storage with react - ref: https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2
     componentDidMount() {
-        //localStorage.clear(); //REMOVE - development only
-        //localStorage.removeItem('archiveData');
+
         this.hydrateStateWithLocalStorage();
 
         // add event listener to save state to localStorage
@@ -294,28 +293,7 @@ class UserInput extends Component {
     archiveClose = () => {
         this.setState({viewArchive: false});
     }
-/*
-    testArchive = () => { // TODO - remove this, testing only
 
-        const archiveObj = {
-            data: [
-                  ['Day', 'Calories'],
-                  ['Mon', Math.floor(Math.random() * 10)],
-                  ['Tues', Math.floor(Math.random() * 10)],
-                  ['Weds', Math.floor(Math.random() * 10)],
-                  ['Thurs', Math.floor(Math.random() * 10)],
-                  ['Fri', Math.floor(Math.random() * 10)],
-                  ['Sat', Math.floor(Math.random() * 10)],
-                  ['Sun', Math.floor(Math.random() * 10)]
-            ],
-            date: 'Thursday 19th July 2018',
-            defaultDate: '2018-07-16'
-        };
-        archiveArray.unshift(archiveObj);
-        this.setState({archiveData: archiveArray});
-        console.log('archived', this.state.archiveData, 'this.state.archiveData', archiveArray, 'archiveArray');
-    }
-*/
     // archive - previous chart
     previous = () => {
 
