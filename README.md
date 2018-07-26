@@ -29,6 +29,8 @@ ___
 - Items added today can be deleted from the food log.
 - Calorie counters should keep track of todays, this weeks and total calories consumed.
 - This data should be used to fill a chart for this weeks calorie intake as it is selected.
+- When a new week is reached the chart data is archived and the chart is cleared for new data.
+- Archived charts can be viewed by the user.
 - The users data should persist when the browser is refreshed or closed.
 
 #### App Architecture
