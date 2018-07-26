@@ -34,7 +34,7 @@ const ArchiveChart = ({archiveData, archiveKey, chart}) => {
         data= {archiveData[archiveKey] === undefined? '' : archiveData[archiveKey].data}
         options={this.state.options}
         width="100%"
-        height="400px"
+        height="350px"
         legend_toggle
       />
     </div>
